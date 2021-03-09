@@ -1,0 +1,42 @@
+import React from 'react';
+import {
+  Container,
+  makeStyles
+} from '@material-ui/core';
+import Page from 'src/components/Page';
+import FormSeccion from 'src/components/FormSeccion';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.dark,
+    minHeight: '100%',
+    paddingBottom: theme.spacing(3),
+    paddingTop: theme.spacing(3)
+  },
+  productCard: {
+    height: '100%'
+  },
+  letter: {
+    fontFamily: 'arial',
+    fontSize: '10',
+    margin: '20px'
+  }
+}));
+
+const ProductList = () => {
+  const classes = useStyles();
+
+  return (
+    <Page
+      className={classes.root}
+      title="Crear Guia"
+    >
+      <Container maxWidth={false}>
+        <h1 className={classes.letter}> Crear nueva guia </h1>
+        <FormSeccion />
+      </Container>
+    </Page>
+  );
+};
+
+export default ProductList;
