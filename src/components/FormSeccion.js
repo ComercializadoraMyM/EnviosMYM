@@ -154,10 +154,10 @@ const empaques = [
 const remitente = [
   {
     nombre: '  MYM Express',
-    direccion: '  7741 NW 7TH AV APT 109',
-    origen: '  Miami - Florida - Estados Unidos',
-    zipcode: '  33126',
-    telefono: '  7863020294',
+    direccion: '  9406 N.W 13th ST Suite 2',
+    origen: '  Estados Unidos, Miami, Florida',
+    zipcode: '  33172',
+    telefono: '  786 3020294',
     email: '  davidfmejia2018@gmail.com'
   }
 ];
@@ -193,7 +193,6 @@ const useStyles = makeStyles((theme) => ({
   marginO: {
     marginLeft: '20px',
     marginTop: '15px',
-    width: '900px',
   },
   marginXS: {
     marginLeft: '20px',
@@ -219,6 +218,11 @@ const useStyles = makeStyles((theme) => ({
     width: '100px',
     backgroundColor: '#fceadd'
   },
+  butPrint: {
+    marginLeft: '5px',
+    marginTop: '10px',
+    width: '200px'
+  },
   paragr: {
     color: '#444444',
     textAlign: 'left',
@@ -237,7 +241,10 @@ const useStyles = makeStyles((theme) => ({
     width: '400px',
     height: '50px',
     textAlign: 'center',
-  }
+  },
+    imgShow: {
+      display: 'none',
+  }, 
 }));
 
 export default function FormSeccion() {
@@ -402,6 +409,25 @@ export default function FormSeccion() {
     doc.save('guia.pdf');
   };
 
+  const generateZebra = () => {
+    var JsBarcode = require('jsbarcode');
+    JsBarcode("#code39", "14A5B3V45612309", {format: "code39"});
+    const img = document.querySelector('img#code39');
+    const logo = new Image();
+    logo.src = '/static/images/avatars/guia-zebra.png';
+    const doc = new jsPDF('l', 'cm', [7, 10]);
+    doc.addImage(logo, 'PNG', 0.5, 0.5, 9, 6);
+    doc.addImage(img.src, 'JPEG', 2.2, 0.58, 6, 1);
+    doc.setFontSize(15);
+    doc.setFont('verdana', 'normal');
+    doc.setFontSize('5');
+    doc.text(5.9, 1.9, guia.infGuia.fecha);
+    doc.text(1.2, 6.04, guia.vlrLiquidacion.peso+' '+guia.vlrLiquidacion.undPeso);
+    doc.text(1.8, 5.84, guia.datosEnvio.descripcion);
+    img.style.display = 'none';
+    doc.save('guia.pdf');
+  };
+
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -510,6 +536,24 @@ export default function FormSeccion() {
           <Paper className={classes.paper}>
             <h2 className={classes.tit}>Datos del Envio</h2>
             <form>
+            <TextField
+                id="unidad"
+                name="datosEnvio"
+                className={clsx(classes.marginXS)}
+                select
+                label="Unidad"
+                value={longitud}
+                onChange={handleChangeLongitud}
+              >
+                {longitudes.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField id="largo" name="datosEnvio" label="Largo" className={classes.marginXS} onChange={handleChangeGuia} />
+              <TextField id="alto" name="datosEnvio" label="Alto" className={classes.marginXS} onChange={handleChangeGuia} />
+              <TextField id="ancho" name="datosEnvio" label="Ancho" className={classes.marginXS} onChange={handleChangeGuia} />
               <TextField
                 id="tipoEmpaque"
                 name="datosEnvio"
@@ -525,25 +569,7 @@ export default function FormSeccion() {
                   </MenuItem>
                 ))}
               </TextField>
-              <TextField id="largo" name="datosEnvio" label="Largo" className={classes.marginXS} onChange={handleChangeGuia} />
-              <TextField id="alto" name="datosEnvio" label="Alto" className={classes.marginXS} onChange={handleChangeGuia} />
-              <TextField id="ancho" name="datosEnvio" label="Ancho" className={classes.marginXS} onChange={handleChangeGuia} />
-              <TextField
-                id="unidad"
-                name="datosEnvio"
-                className={clsx(classes.marginXS)}
-                select
-                label="Unidad"
-                value={longitud}
-                onChange={handleChangeLongitud}
-              >
-                {longitudes.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField id="descripcion" name="datosEnvio" label="Descripcion del contenido" className={classes.marginO} onChange={handleChangeGuia} />
+              <TextField id="descripcion" name="datosEnvio" label="Descripcion corta del contenido" className={classes.margin} onChange={handleChangeGuia} />
             </form>
           </Paper>
         </Grid>
@@ -702,9 +728,13 @@ export default function FormSeccion() {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <img id='code39' />
-            <Button variant="outlined" color="primary" onClick={generatePdf} className={classes.but}>
-              Ver PDF
+            <br />
+            <img id='code39' alt='codigo de barras' className={classes.imgShow} />
+            <Button variant="outlined" color="primary" onClick={generatePdf} className={classes.butPrint}>
+              Impresora Papel
+            </Button>
+            <Button variant="outlined" color="primary" onClick={generateZebra} className={classes.butPrint}>
+              Impresora Zebra
             </Button>
             <br />
             <Button

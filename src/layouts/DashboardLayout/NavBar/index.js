@@ -70,6 +70,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
+    // eslint-disable-next-line
   }, [location.pathname]);
 
   const content = (

@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 export default (name = '') => name
   .replace(/\s+/, ' ')
   .split(' ')

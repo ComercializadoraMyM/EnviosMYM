@@ -4,7 +4,6 @@ import {
 } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Profile from './Profile';
-import LoginForm from 'src/components/LoginForm';
 
 const useStyles = makeStyles((theme) => ({
   root: {

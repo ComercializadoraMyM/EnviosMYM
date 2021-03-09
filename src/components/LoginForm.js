@@ -7,7 +7,6 @@ import FormControl from '@material-ui/core/FormControl';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import VpnKeySharpIcon from '@material-ui/icons/VpnKeySharp';
 import Button from '@material-ui/core/Button';
-import { useHref } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,7 +38,9 @@ const useStyles = makeStyles((theme) => ({
     }, 
     letter: {
         color:'grey',
-        size:'9px'
+        size:'9px',
+        marginTop: '20px',
+        display: 'none'
     }
 }));
 
@@ -56,15 +57,13 @@ export default function LoginForm(props) {
     const handleChangeLog = (event) => {
         logIn[event.target.name][event.target.id] = event.target.value;
         setLogIn(logIn);
-        console.log(logIn);
     };
 
     const handleChangeLogIn = (event) => {
         if (logIn.validation.nombre === "Envios" && logIn.validation.password === "MYM2021"){
-            console.log("si");
             window.location='/app/account';
         } else {
-            console.log("try again");
+            window.location='/';
         }
     };
 
@@ -79,7 +78,7 @@ return (
                 <h1>Bienvenido</h1>
                 <br />
                 <br />
-                <img src="/static/images/avatars/express.png" width='200' className={classes.image}/>
+                <img src="/static/images/avatars/express.png" width='200' className={classes.image} alt='img login' />
                 <br />
                 <FormControl className={classes.form} >
                     <InputLabel htmlFor="user">Nombre de usuario</InputLabel>
@@ -106,6 +105,9 @@ return (
                             <VpnKeySharpIcon/>
                             </InputAdornment>
                         }/>
+                        <h4 className={classes.letter} >
+                            Datos incorrectos.
+                        </h4>
                 </FormControl>
                 <div>
                    <Button 
