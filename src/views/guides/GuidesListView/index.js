@@ -15,7 +15,11 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100%',
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3)
-  }
+  },
+  tit: {
+    color: 'black',
+    margin: '20px'
+  },
 }));
 
 const CustomerListView = () => {
@@ -28,6 +32,7 @@ const CustomerListView = () => {
       title="Guides lista"
     >
       <Container maxWidth={false}>
+        <h2 className={classes.tit}>Lista de las Guias</h2>
         <Toolbar />
         <Box mt={3}>
           <Results customers={customers} />

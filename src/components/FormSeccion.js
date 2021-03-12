@@ -1,21 +1,25 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import clsx from 'clsx';
-import MenuItem from '@material-ui/core/MenuItem';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControl from '@material-ui/core/FormControl';
-import Button from '@material-ui/core/Button';
 import jsPDF from 'jspdf';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+  makeStyles,
+  TextField,
+  MenuItem,
+  Paper,
+  Grid,
+  Input,
+  InputLabel,
+  InputAdornment,
+  FormControl,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from '@material-ui/core';
+
+var idGuia = '';
 
 const pesos = [
   {
@@ -47,17 +51,6 @@ const paises = [
   {
     value: 'Estados Unidos',
     label: 'Estados Unidos',
-  },
-];
-
-const clientes = [
-  {
-    value: 'Cliente 1',
-    label: 'Cliente 1',
-  },
-  {
-    value: 'Cliente 2',
-    label: 'Cliente 2',
   },
 ];
 
@@ -177,51 +170,32 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     height: '400px'
   },
-  root1: {
-    flexGrow: 1,
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  contBar: {
-    alignItems: 'center',
-  },
   margin: {
     marginLeft: '20px',
     marginTop: '15px',
     width: '300px',
-  },
-  marginO: {
-    marginLeft: '20px',
-    marginTop: '15px',
   },
   marginXS: {
     marginLeft: '20px',
     marginTop: '15px',
     width: '130px',
   },
-  withoutLabel: {
-    marginTop: theme.spacing(3),
-  },
   textField: {
     width: '25ch',
   },
-  root2: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
   butt: {
     backgroundColor: '#d8e6ff',
-    width: '250px'
+    width: '200px'
   },
   but: {
     marginLeft: '5px',
-    width: '100px',
+    width: '200px',
     backgroundColor: '#fceadd'
   },
   butPrint: {
-    marginLeft: '5px',
     marginTop: '10px',
-    width: '200px'
+    width: '200px',
+    alignSelf: 'center'
   },
   paragr: {
     color: '#444444',
@@ -233,17 +207,13 @@ const useStyles = makeStyles((theme) => ({
     color: 'black',
     margin: '20px'
   },
-  textPDF: {
-      color: 'grey',
-      textSizeAdjust: '8px',
-  },
   dialogstyle: {
     width: '400px',
     height: '50px',
-    textAlign: 'center',
+    textAlign: 'center'
   },
-    imgShow: {
-      display: 'none',
+  imgShow: {
+    display: 'none',
   }, 
 }));
 
@@ -251,10 +221,6 @@ export default function FormSeccion() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     amount: '',
-    password: '',
-    weight: '',
-    weightRange: '',
-    showPassword: false,
   });
 
   const [guia, setGuia] = React.useState(
@@ -270,12 +236,8 @@ export default function FormSeccion() {
         pais: '',
         ciudad: '',
         direccion: '',
-        vlrUnidad: {
-          $numberDouble: ''
-        },
-        vlrSeguro: {
-          $numberDouble: ''
-        }
+        vlrUnidad: '',
+        vlrSeguro: ''
       },
       datosEnvio: {
         tipoEmpaque: '',
@@ -296,7 +258,8 @@ export default function FormSeccion() {
       },
       costoEnvio: {
         tipEnvioNal: ''
-      }
+      },
+      status: 'Guia Creada'
     }
   );
 
@@ -350,14 +313,6 @@ export default function FormSeccion() {
     setNombGuia(event.target.value);
   };
 
-  const [cliente, setCliente] = React.useState('');
-
-  const handleChangeCliente = (event) => {
-    guia[event.target.name].nombre = event.target.value;
-    setGuia(guia);
-    setCliente(event.target.value);
-  };
-
   const [envNal, setEnvNal] = React.useState('');
 
   const handleChangeEnvNal = (event) => {
@@ -390,10 +345,46 @@ export default function FormSeccion() {
     setTipoEnvio(event.target.value);
   };
 
+  const [clientes, setNombCliente] = React.useState([]);
+
+  const handleChangeListaClientes = async() => {
+    await fetch('http://localhost:3001/api/cliente')
+    .then(function(response) {
+        return response.json();
+    }).then(data=>{
+      setNombCliente(data);
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
+  }
+
+  const [cliente, setCliente] = React.useState('');
+
+  const handleChangeCliente = async(event) => {
+    guia[event.target.name] = event.target.value;
+    setGuia(guia);
+    setCliente(event.target.value);
+  };
+
+  const handleChangeBD = async() => {
+    var prueba = { "guia": JSON.stringify(guia) };
+    await fetch("http://localhost:3001/api/guia", {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(prueba)
+    }).then(data=>{
+      idGuia = prueba._id;
+      console.log (guia);
+    });
+  }
+
   const generatePdf = () => {
     var JsBarcode = require('jsbarcode');
-    JsBarcode("#code39", "14A5B3V45612309", {format: "code39"});
-    const img = document.querySelector('img#code39');
+    JsBarcode("#code128", idGuia, {format: "code128"});
+    const img = document.querySelector('img#code128');
     const logo = new Image();
     logo.src = '/static/images/avatars/guia.png';
     const doc = new jsPDF('p', 'pt');
@@ -403,15 +394,22 @@ export default function FormSeccion() {
     doc.setFont('verdana', 'normal');
     doc.setFontSize('10');
     doc.text(350, 118, guia.infGuia.fecha);
+    doc.text(350, 95, idGuia.toString());
     doc.text(70, 221, guia.vlrLiquidacion.peso+' '+guia.vlrLiquidacion.undPeso);
     doc.text(370, 221, guia.datosEnvio.descripcion);
+    doc.text(360, 158, cliente.nombre);
+    doc.text(360, 169, cliente.telefono);
+    doc.text(360, 179, cliente.pais);
+    doc.text(360, 189, cliente.ciudad);
+    doc.text(360, 200, cliente.direccion);
     img.style.display = 'none';
+    console.log(guia);
     doc.save('guia.pdf');
   };
 
   const generateZebra = () => {
     var JsBarcode = require('jsbarcode');
-    JsBarcode("#code39", "14A5B3V45612309", {format: "code39"});
+    JsBarcode("#code39", idGuia, {format: "code39"});
     const img = document.querySelector('img#code39');
     const logo = new Image();
     logo.src = '/static/images/avatars/guia-zebra.png';
@@ -437,6 +435,29 @@ export default function FormSeccion() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const [openEnvio, setOpenEnvio] = React.useState(false);
+
+  const [guiaBD, setGuiaBD] = React.useState([]);
+
+  const handleClickOpenEnvio = async() => {
+    setOpenEnvio(true);
+    await fetch('http://localhost:3001/api/guia')
+    .then(function(response) {
+        return response.json();
+    }).then(data=>{
+      setGuiaBD(data);
+      idGuia = guiaBD[guiaBD.length - 1]._id;
+      console.log(idGuia);
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
+  };
+
+  const handleCloseEnvio = () => {
+    setOpenEnvio(false);
+  };
   
   return (
     <div className={classes.root}>
@@ -453,6 +474,7 @@ export default function FormSeccion() {
                 label="Nombre"
                 value={nomGuia}
                 onChange={handleChangeNomGuia}
+                onClick={handleChangeListaClientes}
               >
                 {nombreGuia.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -483,27 +505,27 @@ export default function FormSeccion() {
             {remitente.map((rem) => (
               <div>
                 <p className={classes.paragr}>
-                  Nombre:
+                  <strong>Nombre:</strong>
                   {rem.nombre}
                 </p>
                 <p className={classes.paragr}>
-                  Direccion:
+                  <strong>Direccion:</strong>
                   {rem.direccion}
                 </p>
                 <p className={classes.paragr}>
-                  Origen:
+                  <strong>Origen:</strong>
                   {rem.origen}
                 </p>
                 <p className={classes.paragr}>
-                  Codigo ZIP:
+                  <strong>Codigo ZIP:</strong>
                   {rem.zipcode}
                 </p>
                 <p className={classes.paragr}>
-                  Telefono:
+                  <strong>Telefono:</strong>
                   {rem.telefono}
                 </p>
                 <p className={classes.paragr}>
-                  Email:
+                  <strong>Email:</strong>
                   {rem.email}
                 </p>
               </div>
@@ -524,11 +546,31 @@ export default function FormSeccion() {
                 onChange={handleChangeCliente}
               >
                 {clientes.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+                  <MenuItem key={option.nombre} value={option}>
+                    {option.nombre}
                   </MenuItem>
                 ))}
               </TextField>
+                <p className={classes.paragr}>
+                  <strong>Direccion:</strong>
+                  {cliente.direccion}
+                </p>
+                <p className={classes.paragr}>
+                  <strong>Pais:</strong>
+                  {cliente.pais}
+                </p>
+                <p className={classes.paragr}>
+                  <strong>Ciudad:</strong>
+                  {cliente.ciudad}
+                </p>
+                <p className={classes.paragr}>
+                  <strong>Email:</strong>
+                  {cliente.email}
+                </p>
+                <p className={classes.paragr}>
+                  <strong>Telefono:</strong>
+                  {cliente.telefono}
+                </p>
             </form>
           </Paper>
         </Grid>
@@ -708,17 +750,17 @@ export default function FormSeccion() {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         <p>
-                            Flete: {guia.vlrLiquidacion.peso*2}
+                          <strong>Flete:</strong> {guia.vlrLiquidacion.peso*cliente.vlrUnidad}
                         </p>
                         <p>
-                            Seguro: {2}
+                          <strong>Seguro:</strong> {cliente.vlrSeguro}
                         </p>
                         <p>
-                            Impuestos: 0
+                          <strong>Impuestos:</strong> 0
                         </p>
                         <br />
                         <p>
-                            <strong>Total:</strong> {(guia.vlrLiquidacion.peso*2)+2+0}
+                            <strong>Total:</strong> {(guia.vlrLiquidacion.peso*cliente.vlrUnidad)+cliente.vlrSeguro+0}
                         </p>
                     </DialogContentText>
                 </DialogContent>
@@ -729,22 +771,47 @@ export default function FormSeccion() {
                 </DialogActions>
             </Dialog>
             <br />
-            <img id='code39' alt='codigo de barras' className={classes.imgShow} />
-            <Button variant="outlined" color="primary" onClick={generatePdf} className={classes.butPrint}>
-              Impresora Papel
-            </Button>
-            <Button variant="outlined" color="primary" onClick={generateZebra} className={classes.butPrint}>
-              Impresora Zebra
-            </Button>
-            <br />
+            <p className={classes.paragr}>** Primero enviar para despues descargar</p>
             <Button
               variant="outlined"
               color="primary"
+              onClick={handleChangeBD}
               className={clsx(classes.margin, classes.butt)}
               type="submit"
             >
               Enviar
             </Button>
+            <br />
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handleClickOpenEnvio}
+              className={clsx(classes.margin, classes.butPrint)}
+              type="submit"
+            >
+              {idGuia=guiaBD._id}
+              Descargar
+            </Button>
+            <Dialog
+                open={openEnvio}
+                onClose={handleCloseEnvio}
+                aria-labelledby="alert-dialog-envio"
+            >
+                <DialogTitle id="alert-dialog-envio" className={classes.dialogstyle}>{"La guia se ha enviado satisfactoriamente"}</DialogTitle>
+                  <img id='code128' alt='codigo de barras' className={classes.imgShow} />
+                  <p>{idGuia}</p>
+                  <Button variant="outlined" color="primary" onClick={generatePdf} className={classes.butPrint}>
+                    Impresora Papel
+                  </Button>
+                  <Button variant="outlined" color="primary" onClick={generateZebra} className={classes.butPrint}>
+                    Impresora Zebra
+                  </Button> 
+                <DialogActions>
+                    <Button onClick={handleCloseEnvio} color="primary" autoFocus>
+                        Cerrar
+                    </Button>
+                </DialogActions>
+            </Dialog>
           </Paper>
         </Grid>
       </Grid>

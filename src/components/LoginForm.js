@@ -1,12 +1,16 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import { makeStyles} from '@material-ui/core/styles';
-import { Grid, Input, InputLabel} from '@material-ui/core/';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControl from '@material-ui/core/FormControl';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import VpnKeySharpIcon from '@material-ui/icons/VpnKeySharp';
-import Button from '@material-ui/core/Button';
+import { 
+    Grid, 
+    Input, 
+    InputLabel, 
+    makeStyles,
+    Paper, 
+    InputAdornment,
+    FormControl,
+    Button
+} from '@material-ui/core/';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
         size:'9px',
         marginTop: '20px',
         display: 'none'
+    }, 
+    header: {
+        margin: '40px',
     }
 }));
 
@@ -59,7 +66,7 @@ export default function LoginForm(props) {
         setLogIn(logIn);
     };
 
-    const handleChangeLogIn = (event) => {
+    const handleChangeLogIn = () => {
         if (logIn.validation.nombre === "Envios" && logIn.validation.password === "MYM2021"){
             window.location='/app/account';
         } else {
@@ -73,13 +80,8 @@ return (
     <div className={classes.root} >   
         <Paper className={classes.paper}>
             <Grid>
-                <br />
-                <br />
-                <h1>Bienvenido</h1>
-                <br />
-                <br />
+                <h1 className={classes.header}>Bienvenido</h1>
                 <img src="/static/images/avatars/express.png" width='200' className={classes.image} alt='img login' />
-                <br />
                 <FormControl className={classes.form} >
                     <InputLabel htmlFor="user">Nombre de usuario</InputLabel>
                         <Input

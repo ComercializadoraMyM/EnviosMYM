@@ -1,10 +1,10 @@
 import React from 'react';
+import Page from 'src/components/Page';
+import FormSeccion from 'src/components/FormSeccion';
 import {
   Container,
   makeStyles
 } from '@material-ui/core';
-import Page from 'src/components/Page';
-import FormSeccion from 'src/components/FormSeccion';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,9 +12,6 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100%',
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3)
-  },
-  productCard: {
-    height: '100%'
   },
   letter: {
     fontFamily: 'arial',

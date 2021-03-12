@@ -12,9 +12,9 @@ import {
 } from '@material-ui/core';
 
 const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
+  avatar: '/static/images/avatars/logo.png',
   city: 'Colombia - Estados Unidos',
-  name: 'Comercializadora Mejia y Mejia',
+  name: 'MYM Express',
 };
 
 const useStyles = makeStyles(() => ({

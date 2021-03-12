@@ -15,7 +15,8 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  makeStyles
+  makeStyles,
+  Button
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
 
@@ -23,6 +24,10 @@ const useStyles = makeStyles((theme) => ({
   root: {},
   avatar: {
     marginRight: theme.spacing(2)
+  },
+  but: {
+    marginTop: '10px',
+    marginLeft: '10px'
   }
 }));
 
@@ -72,6 +77,20 @@ const Results = ({ className, customers, ...rest }) => {
     setPage(newPage);
   };
 
+  const [guias, setGuias] = React.useState([]);
+
+  const handleChangeListaGuia = async() => {
+    await fetch('http://localhost:3001/api/guia')
+    .then(function(response) {
+        return response.json();
+    }).then(data=>{
+      setGuias(data);
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
+  }
+
   return (
     <Card
       className={clsx(classes.root, className)}
@@ -79,6 +98,14 @@ const Results = ({ className, customers, ...rest }) => {
     >
       <PerfectScrollbar>
         <Box minWidth={1050}>
+        <Button 
+          variant="outlined" 
+          color="primary" 
+          className={classes.but}
+          onClick={handleChangeListaGuia}
+        >
+          Actualizar Lista
+        </Button>
           <Table>
             <TableHead>
               <TableRow>
