@@ -76,21 +76,7 @@ const Results = ({ className, customers, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-
-  const [guias, setGuias] = React.useState([]);
-
-  const handleChangeListaGuia = async() => {
-    await fetch('http://localhost:3001/api/guia')
-    .then(function(response) {
-        return response.json();
-    }).then(data=>{
-      setGuias(data);
-    })
-    .catch(function(err) {
-        console.error(err);
-    });
-  }
-
+  
   return (
     <Card
       className={clsx(classes.root, className)}
@@ -102,7 +88,6 @@ const Results = ({ className, customers, ...rest }) => {
           variant="outlined" 
           color="primary" 
           className={classes.but}
-          onClick={handleChangeListaGuia}
         >
           Actualizar Lista
         </Button>
