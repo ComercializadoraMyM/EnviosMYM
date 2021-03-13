@@ -409,8 +409,8 @@ export default function FormSeccion() {
 
   const generateZebra = () => {
     var JsBarcode = require('jsbarcode');
-    JsBarcode("#code39", idGuia, {format: "code39"});
-    const img = document.querySelector('img#code39');
+    JsBarcode("#code128", idGuia, {format: "code128"});
+    const img = document.querySelector('img#code128');
     const logo = new Image();
     logo.src = '/static/images/avatars/guia-zebra.png';
     const doc = new jsPDF('l', 'cm', [7, 10]);
@@ -419,9 +419,15 @@ export default function FormSeccion() {
     doc.setFontSize(15);
     doc.setFont('verdana', 'normal');
     doc.setFontSize('5');
-    doc.text(5.9, 1.9, guia.infGuia.fecha);
+    doc.text(5.9, 1.89, guia.infGuia.fecha);
+    doc.text(1.2, 1.87, idGuia.toString());
     doc.text(1.2, 6.04, guia.vlrLiquidacion.peso+' '+guia.vlrLiquidacion.undPeso);
     doc.text(1.8, 5.84, guia.datosEnvio.descripcion);
+    doc.text(2.2, 4.25, cliente.nombre);
+    doc.text(2.2, 4.45, cliente.pais);
+    doc.text(2.2, 4.65, cliente.ciudad);
+    doc.text(2.2, 4.85, cliente.direccion);
+    doc.text(2.2, 5.05, cliente.telefono);
     img.style.display = 'none';
     doc.save('guia.pdf');
   };
