@@ -151,7 +151,7 @@ const remitente = [
     origen: '  Estados Unidos, Miami, Florida',
     zipcode: '  33172',
     telefono: '  786 3020294',
-    email: '  davidfmejia2018@gmail.com'
+    email: '  mymexpressglobal@gmail.com'
   }
 ];
 

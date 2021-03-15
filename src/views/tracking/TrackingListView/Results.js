@@ -1,75 +1,110 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
-  Avatar,
   Box,
   Card,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
-  Typography,
-  makeStyles
+  makeStyles,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField
 } from '@material-ui/core';
-import getInitials from 'src/utils/getInitials';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
   avatar: {
     marginRight: theme.spacing(2)
+  },
+  but: {    
+    marginTop: '10px',
+    marginLeft: '5px',
+    width: '200px',
+  },
+  butPrint: {
+    marginTop: '10px',
+    width: '200px',
+    alignSelf: 'center',
+    marginLeft: '10px'
+  },
+  margin: {
+    width: '300px'
+  },
+  dialogstyle: {
+    alignSelf: 'center',
+  },
+  form: {
+    textAlign: 'center'
   }
 }));
 
 const Results = ({ className, customers, ...rest }) => {
   const classes = useStyles();
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
 
-  const handleSelectAll = (event) => {
-    let newSelectedCustomerIds;
-
-    if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
-    } else {
-      newSelectedCustomerIds = [];
+  const [trackings, setTrackings] = React.useState(
+    {
+        fecha: '',
+        track_id: '',
+        nombreCliente: '',
+        whr: '0',
+        peso: '',
+        numCaja: ''
     }
+  );
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+  const [tracking, setTracking] = React.useState([]);
+
+  const handleChangeListaTrack = async() => {
+    await fetch('http://localhost:3001/api/tracking')
+    .then(function(response) {
+        return response.json();
+    }).then(data=>{
+      setTracking(data);
+      customers = data;
+      console.log(customers);
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
   };
 
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
+  const handleChangeBDTracking = async() => {
+    var prueba = { "tracking": JSON.stringify(trackings) };
+    await fetch("http://localhost:3001/api/tracking", {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(prueba)
+    }).then(data=>{
+      console.log (trackings);
+    });
+  }
+  
+  const [open, setOpen] = React.useState(false);
 
-    if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
-    } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
+  const handleClose = () => {
+    setOpen(false);
   };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+  const handleChangeTrack = (event) => {
+    trackings[event.target.id] = event.target.value;
+    setTrackings(trackings);
+    console.log(trackings);
   };
 
   return (
@@ -79,28 +114,81 @@ const Results = ({ className, customers, ...rest }) => {
     >
       <PerfectScrollbar>
         <Box minWidth={1050}>
+          <Button 
+            variant="outlined" 
+            color="primary" 
+            className={classes.but}
+            onClick={handleChangeListaTrack}
+          >
+            Mostrar Entradas
+          </Button>
+          <Button 
+            variant="outlined" 
+            color="primary"  
+            onClick={handleClickOpen} 
+            className={classes.butPrint}
+          >
+              Agregar Entrada
+            </Button>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-track"
+                aria-describedby="alert-track"
+                width="200px"
+            >
+                <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Datos de la entrada nueva:"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-track" className={classes.form}>
+                      <TextField
+                        id="fecha"
+                        label="Fecha - Hora"
+                        type="datetime-local"
+                        defaultValue={Date.now}
+                        onChange={handleChangeTrack}
+                        className={classes.margin}
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                      />
+                      <TextField id="track_id" label="Tracking ID" className={classes.margin} onChange={handleChangeTrack} />
+                      <TextField id="nombreCliente" label="Nombre Cliente" className={classes.margin} onChange={handleChangeTrack} />
+                      <TextField id="peso" label="Peso (Lb)" className={classes.margin} onChange={handleChangeTrack} />
+                      <TextField id="numCaja" label="Numero Caja" className={classes.margin} onChange={handleChangeTrack} />
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button 
+                    onClick={() => {
+                      handleChangeBDTracking();
+                      handleClose();
+                    }}
+                    type="submit"
+                    variant="outlined" 
+                    color="primary"
+                  >
+                    Agregar
+                  </Button>
+                  <Button 
+                    onClick={handleClose} 
+                    variant="outlined" 
+                    color="primary" 
+                  >
+                    Cerrar
+                  </Button>
+                </DialogActions>
+            </Dialog>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
-                    }
-                    onChange={handleSelectAll}
-                  />
+                <TableCell>
+                  Fecha
                 </TableCell>
                 <TableCell>
-                  Identificacion
+                  Tracking ID
                 </TableCell>
                 <TableCell>
-                  Nombre Cliente
-                </TableCell>
-                <TableCell>
-                  WHR
+                  Nombre cliente
                 </TableCell>
                 <TableCell>
                   Peso
@@ -108,64 +196,27 @@ const Results = ({ className, customers, ...rest }) => {
                 <TableCell>
                   # Caja
                 </TableCell>
-                <TableCell>
-                  Status
-                </TableCell>
-                <TableCell>
-                  Pago 
-                </TableCell>
-                <TableCell>
-                  Valor Pago 
-                </TableCell>
-                <TableCell>
-                  Pais Pago 
-                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {tracking.slice(0).map((tracking) => (
                 <TableRow
                   hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
                 >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
-                      value="true"
-                    />
+                  <TableCell>
+                    {moment(tracking.fecha).format('DD/MM/YYYY')}                    
                   </TableCell>
                   <TableCell>
-                    <Box
-                      alignItems="center"
-                      display="flex"
-                    >
-                      <Avatar
-                        className={classes.avatar}
-                        src={customer.avatarUrl}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.name}
-                      </Typography>
-                    </Box>
+                    {tracking.track_id}
                   </TableCell>
                   <TableCell>
-                    {customer.email}
+                    {tracking.nombreCliente}
                   </TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {tracking.peso}
                   </TableCell>
                   <TableCell>
-                    {customer.phone}
-                  </TableCell>
-                  <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY')}
+                    {tracking.numCaja}
                   </TableCell>
                 </TableRow>
               ))}
@@ -173,15 +224,6 @@ const Results = ({ className, customers, ...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={customers.length}
-        onChangePage={handlePageChange}
-        onChangeRowsPerPage={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </Card>
   );
 };

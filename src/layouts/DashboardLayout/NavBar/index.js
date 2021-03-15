@@ -42,7 +42,7 @@ const items = [
   {
     href: '/app/tracking-view',
     icon: Package,
-    title: 'Tracking'
+    title: 'Entradas'
   }
 ];
 
@@ -129,13 +129,13 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           gutterBottom
           variant="h4"
         >
-          Comercializadora Mejia y Mejia
+          MYM EXPRESS GLOBAL
         </Typography>
         <Typography
           align="center"
           variant="body2"
         >
-          Cra 75 #24D-73, Piso 2
+          9406 NW 13th ST. BAY 42 MIAMI-FLORIDA 33172
         </Typography>
       </Box>
     </Box>

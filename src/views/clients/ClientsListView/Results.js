@@ -1,75 +1,147 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
-  Avatar,
   Box,
   Card,
-  Checkbox,
   Table,
+  MenuItem,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
-  makeStyles
+  makeStyles,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField
 } from '@material-ui/core';
-import getInitials from 'src/utils/getInitials';
+
+const tiposID = [
+  {
+    value: 'CC',
+    label: 'CC',
+  },
+  {
+    value: 'NIT',
+    label: 'NIT',
+  },
+  {
+    value: 'CE',
+    label: 'CE',
+  },
+  {
+    value: 'NIP',
+    label: 'NIP',
+  },
+  {
+    value: 'TI',
+    label: 'TI',
+  },
+];
 
 const useStyles = makeStyles((theme) => ({
   root: {},
   avatar: {
     marginRight: theme.spacing(2)
+  },
+  but: {
+    marginLeft: '5px',
+    width: '200px',
+    backgroundColor: '#fceadd'
+  },
+  butPrint: {
+    marginTop: '10px',
+    width: '200px',
+    alignSelf: 'center',
+    marginLeft: '10px'
+  },
+  margin: {
+    width: '300px'
+  },
+  dialogstyle: {
+    alignSelf: 'center',
+  },
+  form: {
+    textAlign: 'center'
   }
 }));
 
 const Results = ({ className, customers, ...rest }) => {
+  const [cliente, setCliente] = React.useState(
+    {
+        tipoid: '',
+        numid: '',
+        nombre: '',
+        email: '',
+        telefono: '',
+        pais: '',
+        ciudad: '',
+        direccion: '',
+        unidad: '',
+        vlrUnidad: '',
+        vlrSeguro: ''
+    }
+  );
+
   const classes = useStyles();
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
+  
+  const [clientes, setNombCliente] = React.useState([]);
 
-  const handleSelectAll = (event) => {
-    let newSelectedCustomerIds;
-
-    if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
-    } else {
-      newSelectedCustomerIds = [];
-    }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
+  const handleChangeListaClientes = async() => {
+    await fetch('http://localhost:3001/api/cliente')
+    .then(function(response) {
+        return response.json();
+    }).then(data=>{
+      setNombCliente(data);
+      customers = data;
+      console.log(customers);
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
   };
 
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
+  const handleChangeBD = async() => {
+    var prueba = { "cliente": JSON.stringify(cliente) };
+    await fetch("http://localhost:3001/api/cliente", {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(prueba)
+    }).then(data=>{
+      console.log (cliente);
+    });
+  }
+  
+  const [tipoID, setID] = React.useState('');
 
-    if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
-    } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
+  const handleChangeID = (event) => {
+    cliente.tipoid = event.target.value;
+    setCliente(cliente);
+    setID(event.target.value);
+    console.log(cliente);
   };
 
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
+  const handleChangeCliente = (event) => {
+    cliente[event.target.id] = event.target.value;
+    setCliente(cliente);
   };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -79,20 +151,78 @@ const Results = ({ className, customers, ...rest }) => {
     >
       <PerfectScrollbar>
         <Box minWidth={1050}>
+          <Button variant="outlined" color="primary" onClick={handleChangeListaClientes} className={classes.butPrint}>
+            Mostrar clientes
+          </Button>
+          <Button 
+            variant="outlined" 
+            color="primary"  
+            onClick={handleClickOpen} 
+            className={classes.butPrint}
+          >
+              Agregar Cliente
+            </Button>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                width="200px"
+            >
+                <DialogTitle id="alert-dialog-title" className={classes.dialogstyle}>{"Datos del cliente nuevo:"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" className={classes.form}>
+                      <TextField
+                        id="tipoid"
+                        name="destinatario"
+                        className={clsx(classes.margin)}
+                        select
+                        label="Tipo identificacion"
+                        value={tipoID}
+                        onChange={handleChangeID}
+                      >
+                        {tiposID.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                      <TextField id="numid" name="destinatario" label="Numero identificacion" className={classes.margin} onChange={handleChangeCliente} />
+                      <TextField id="nombre" name="destinatario" label="Nombre" className={classes.margin} onChange={handleChangeCliente} />
+                      <TextField id="email" name="destinatario" label="Email" className={classes.margin} onChange={handleChangeCliente} />
+                      <TextField id="telefono" name="destinatario" label="Telefono" className={classes.margin} onChange={handleChangeCliente} />
+                      <TextField id="pais" name="destinatario" label="Pais" className={classes.margin} onChange={handleChangeCliente} />
+                      <TextField id="ciudad" name="destinatario" label="Ciudad" className={classes.margin} onChange={handleChangeCliente} />
+                      <TextField id="direccion" name="destinatario" label="Direccion" className={classes.margin} onChange={handleChangeCliente} />
+                      <TextField id="unidad" name="destinatario" label="Unidad" className={classes.margin} onChange={handleChangeCliente} />
+                      <TextField id="vlrUnidad" name="destinatario" label="Valor Unidad" className={classes.margin} onChange={handleChangeCliente} />
+                      <TextField id="vlrSeguro" name="destinatario" label="Valor Seguro" className={classes.margin} onChange={handleChangeCliente} />
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button 
+                    onClick={() => {
+                      handleChangeBD();
+                      handleClose();
+                    }}
+                    type="submit"
+                    variant="outlined" 
+                    color="primary"
+                  >
+                    Agregar
+                  </Button>
+                  <Button 
+                    onClick={handleClose} 
+                    variant="outlined" 
+                    color="primary" 
+                  >
+                    Cerrar
+                  </Button>
+                </DialogActions>
+            </Dialog>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
                 <TableCell>
                   Identificacion
                 </TableCell>
@@ -111,55 +241,40 @@ const Results = ({ className, customers, ...rest }) => {
                 <TableCell>
                   Direccion
                 </TableCell>
-                <TableCell>
-                  Tarifa 
-                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {clientes.slice(0).map((clientes) => (
                 <TableRow
                   hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
                 >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
-                      value="true"
-                    />
-                  </TableCell>
                   <TableCell>
                     <Box
                       alignItems="center"
                       display="flex"
                     >
-                      <Avatar
-                        className={classes.avatar}
-                        src={customer.avatarUrl}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
                       <Typography
                         color="textPrimary"
                         variant="body1"
                       >
-                        {customer.name}
+                        {clientes.numid}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {customer.email}
+                    {clientes.nombre}
                   </TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {clientes.email}
                   </TableCell>
                   <TableCell>
-                    {customer.phone}
+                    {`${clientes.pais} ${clientes.ciudad}`}
                   </TableCell>
                   <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY')}
+                    {clientes.telefono}
+                  </TableCell>
+                  <TableCell>
+                    {clientes.direccion}
                   </TableCell>
                 </TableRow>
               ))}
@@ -167,15 +282,6 @@ const Results = ({ className, customers, ...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={customers.length}
-        onChangePage={handlePageChange}
-        onChangeRowsPerPage={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </Card>
   );
 };
