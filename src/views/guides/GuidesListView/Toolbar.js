@@ -19,7 +19,9 @@ import {
 import { Search as SearchIcon } from 'react-feather';
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    width: '100%'
+  },
   importButton: {
     marginRight: theme.spacing(1)
   },
@@ -67,19 +69,6 @@ const Toolbar = ({ className, ...rest }) => {
         console.error(err);
     });
   };
-  const [clientes, setCliente] = React.useState();
-
-  const handleChangeListaCliente = async() => {
-    await fetch('http://localhost:3001/api/cliente')
-    .then(function(response) {
-        return response.json();
-    }).then(data=>{
-      setCliente(data);
-    })
-    .catch(function(err) {
-        console.error(err);
-    });
-  };
 
   const handleChangeGuia = (event) => {
     guias[event.target.id] = event.target.value;
@@ -120,11 +109,10 @@ const Toolbar = ({ className, ...rest }) => {
                 className={classes.butStyle}
                 onClick={() => {
                   handleChangeListaGuia();
-                  handleChangeListaCliente();
                   handleClickOpen();
                 }}
               >
-                Agregar Entrada
+                Buscar Guia
               </Button>
             <Dialog
                 open={open}
@@ -137,7 +125,7 @@ const Toolbar = ({ className, ...rest }) => {
                 <DialogContent>
                     <DialogContentText id="alert-track" className={classes.form}>
                         <p>
-                          <strong>Flete:</strong> {clientes.nombre}
+                          <strong>Flete:</strong>
                         </p>
                         <p>
                           <strong>Seguro:</strong> 

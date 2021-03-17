@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Container,
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
-import Results from './Results';
+import TableGuide from './TableGuide';
 import Toolbar from './Toolbar';
-import data from './data';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 
 const CustomerListView = () => {
   const classes = useStyles();
-  const [customers] = useState(data);
 
   return (
     <Page
@@ -35,7 +33,7 @@ const CustomerListView = () => {
         <h2 className={classes.tit}>Lista de las Guias</h2>
         <Toolbar />
         <Box mt={3}>
-          <Results customers={customers} />
+          <TableGuide />
         </Box>
       </Container>
     </Page>

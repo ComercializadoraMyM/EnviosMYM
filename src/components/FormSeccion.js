@@ -19,6 +19,8 @@ import {
   DialogTitle
 } from '@material-ui/core';
 
+var total = 0;
+var impuesto = 0;
 var idGuia = '';
 
 const pesos = [
@@ -259,7 +261,12 @@ export default function FormSeccion() {
       costoEnvio: {
         tipEnvioNal: ''
       },
-      status: 'Guia Creada'
+      status: 'Guia Creada',
+      calculos: {
+        flete: '',
+        impuesto: '',
+        total: ''
+      }
     }
   );
 
@@ -464,6 +471,25 @@ export default function FormSeccion() {
   const handleCloseEnvio = () => {
     setOpenEnvio(false);
   };
+
+  const calculoTotal = () => {
+    console.log('entro');
+    const vlrFlete = guia.vlrLiquidacion.peso * cliente.vlrUnidad;
+    guia.calculos.flete = vlrFlete.toFixed(2);
+    if (guia.vlrLiquidacion.vlrDeclarado > 200){
+      impuesto += total * 0.29;
+      total += impuesto;
+      guia.calculos.impuesto = impuesto.toFixed(2);
+      guia.calculos.total = total.toFixed(2);
+      return true;
+    } else {
+      impuesto += 0;
+      total = vlrFlete + cliente.vlrSeguro;
+      guia.calculos.impuesto = impuesto.toFixed(2);
+      guia.calculos.total = total.toFixed(2);
+      return false;
+    }
+  }
   
   return (
     <div className={classes.root}>
@@ -505,8 +531,8 @@ export default function FormSeccion() {
         </Grid>
       </Grid>
       <Grid container spacing={3}>
-        <Grid item xs={6}>
-          <Paper className={classes.paper1}>
+      <Grid item xs={6}>
+        <Paper className={classes.paper1}>
             <h2 className={classes.tit}>Remitente</h2>
             {remitente.map((rem) => (
               <div>
@@ -542,7 +568,7 @@ export default function FormSeccion() {
           <Paper className={classes.paper1}>
             <h2 className={classes.tit}>Destinatario</h2>
             <form noValidate>
-              <TextField
+            <TextField
                 id="nombre"
                 name="destinatario"
                 className={clsx(classes.margin)}
@@ -743,8 +769,16 @@ export default function FormSeccion() {
             </form>
             <br />
             <br />
-            <Button variant="outlined" color="primary" onClick={handleClickOpen} className={classes.but}>
-                Calcular
+            <Button 
+              variant="outlined" 
+              color="primary" 
+              onClick={() => {
+                calculoTotal();
+                handleClickOpen();
+              }}
+              className={classes.but}
+            >
+              Calcular
             </Button>
             <Dialog
                 open={open}
@@ -762,11 +796,11 @@ export default function FormSeccion() {
                           <strong>Seguro:</strong> {cliente.vlrSeguro}
                         </p>
                         <p>
-                          <strong>Impuestos:</strong> 0
+                          <strong>Impuestos:</strong> {impuesto.toFixed(2)}
                         </p>
                         <br />
                         <p>
-                            <strong>Total:</strong> {(guia.vlrLiquidacion.peso*cliente.vlrUnidad)+cliente.vlrSeguro+0}
+                            <strong>Total:</strong> {total.toFixed(2)}
                         </p>
                     </DialogContentText>
                 </DialogContent>
