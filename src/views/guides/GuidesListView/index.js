@@ -5,7 +5,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
-import TableGuide from './TableGuide';
+import CollapsibleGuides from './CollapsibleGuides';
 import Toolbar from './Toolbar';
 
 const useStyles = makeStyles((theme) => ({
@@ -33,7 +33,7 @@ const CustomerListView = () => {
         <h2 className={classes.tit}>Lista de las Guias</h2>
         <Toolbar />
         <Box mt={3}>
-          <TableGuide />
+          <CollapsibleGuides />
         </Box>
       </Container>
     </Page>

@@ -56,15 +56,8 @@ const TableGuide = (className, ...rest) => {
         setEmployees(response.data)
     }
 
-    const removeData = (id) => {
-        axios.delete(`${URL}/${id}`).then(res => {
-            const del = employees.filter(employee => id !== employee.id)
-            setEmployees(del)
-        })
-    }
-
     const renderHeader = () => {
-        let headerElement = ['Fecha', 'Tracking ID', 'Nombre Cliente', 'Peso', 'Num. Caja', 'Editar']
+        let headerElement = ['Fecha', 'Tracking ID', 'Nombre Cliente', 'Peso', 'Num. Caja', 'WHR', 'Editar']
         return headerElement.map((key, index) => {
             return <th key={index} margin="30px">{key}</th>
         })
@@ -82,6 +75,14 @@ const TableGuide = (className, ...rest) => {
           console.log (trackings);
         });
       }
+
+    const handleChangeWHRBD = async() => {
+        await fetch("http://localhost:3001/api/tracking/"+whrUpdate+'/'+idUpdate, {
+          method: 'POST', 
+        }).then(data=>{
+          console.log (trackings);
+        }); 
+      }
       
       const [open, setOpen] = React.useState(false);
     
@@ -91,6 +92,16 @@ const TableGuide = (className, ...rest) => {
     
       const handleClose = () => {
         setOpen(false);
+      };
+
+      const [openAdd, setOpenAdd] = React.useState(false);
+    
+      const handleClickOpenAdd = () => {
+        setOpenAdd(true);
+      };
+    
+      const handleCloseAdd = () => {
+        setOpenAdd(false);
       };
     
       const [trackings, setTrackings] = React.useState(
@@ -107,8 +118,19 @@ const TableGuide = (className, ...rest) => {
       const handleChangeTrack = (event) => {
         trackings[event.target.id] = event.target.value;
         setTrackings(trackings);
-        console.log(trackings);
       };
+
+      const [whrUpdate, setWhr] = React.useState('');
+
+      const handleChangeWHR = (event) => {
+        setWhr (event.target.value);
+      }
+
+      const [idUpdate, setId] = React.useState('');
+
+      const handleChangeId = (id) => {
+        setId (id);
+      }
 
     const renderBody = () => {
         return employees && employees.map(({ 
@@ -117,7 +139,8 @@ const TableGuide = (className, ...rest) => {
             track_id, 
             nombreCliente, 
             peso,
-            numCaja 
+            numCaja,
+            whr
         }) => {
             return (
                 <tr key={_id}>
@@ -126,8 +149,52 @@ const TableGuide = (className, ...rest) => {
                     <td>{nombreCliente}</td>
                     <td>{peso}</td>
                     <td>{numCaja}</td>
+                    <td>{whr}</td>
                     <td className='opration'>
-                        <Button color='primary' className='button' onClick={() => removeData(_id)}>WHR</Button>
+                        <Button 
+                          color='primary' 
+                          className='button' 
+                          onClick={() => 
+                            {handleChangeId(_id);
+                            handleClickOpenAdd()
+                          }}
+                        >
+                          WHR
+                        </Button>
+                        <Dialog
+                            open={openAdd}
+                            onClose={handleCloseAdd}
+                            aria-labelledby="alert-track"
+                            aria-describedby="alert-track"
+                            width="200px"
+                        >
+                            <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Agregue o Modifique el WHR:"}</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-track" className={classes.form}>
+                                  <TextField id="whr" label="WHR" className={classes.margin} onChange={handleChangeWHR} />
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button 
+                                onClick={() => {
+                                  handleChangeWHRBD();
+                                  handleCloseAdd();
+                                }}
+                                type="submit"
+                                variant="outlined" 
+                                color="primary"
+                              >
+                                Cambiar
+                              </Button>
+                              <Button 
+                                onClick={handleCloseAdd} 
+                                variant="outlined" 
+                                color="primary" 
+                              >
+                                Cerrar
+                              </Button>
+                            </DialogActions>
+                        </Dialog>
                     </td>
                 </tr>
             )

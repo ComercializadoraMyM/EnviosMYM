@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import clsx from 'clsx';
 import {
   Box,
@@ -47,34 +48,35 @@ const Toolbar = ({ className, ...rest }) => {
     setOpen(false);
   };
 
-  var [guiaBus, setGuiaBus] = React.useState("");
+  const [idIn, setIdIn] = React.useState (
+    {
+        id: {
+            in: '',
+        }
+    }
+  );
 
-  const handleChangeGuiaBus = (event) => {
-    guiaBus = event.target.value;
-    setGuiaBus(guiaBus);
-    console.log(guiaBus);
+  const handleInput = (event) => {
+    idIn[event.target.name][event.target.id] = event.target.value;
+    setIdIn(idIn);
   };
 
-  const [guias, setGuias] = React.useState();
+  const URL = 'http://localhost:3001/api/guia';
 
-  const handleChangeListaGuia = async() => {
-    await fetch('http://localhost:3001/api/guia')
-    .then(function(response) {
-        return response.json();
-    }).then(data=>{
-      setGuias(data);
-      console.log(JSON.stringify(guias));
-    })
-    .catch(function(err) {
-        console.error(err);
-    });
-  };
+  const [guias, setGuias] = React.useState({
+    "calculos": {},
+    "destinatario": {}
+  });
 
-  const handleChangeGuia = (event) => {
-    guias[event.target.id] = event.target.value;
-    setGuias(guias);
-    console.log(guias);
-  };
+  const getDataSpecific = async (id) => {
+    const response = await axios.get(`${URL}/${id}`)
+    console.log(response.data.length)
+    if (response.data.length > 0){
+      setGuias(response.data[0])
+    } else {
+      setGuias({"calculos": {}, "destinatario": {}});
+    }
+  }
 
   return (
     <div
@@ -86,6 +88,9 @@ const Toolbar = ({ className, ...rest }) => {
           <CardContent>
             <Box maxWidth={400}>
               <TextField
+                id="in"
+                name="id"
+                onChange={handleInput}
                 fullWidth
                 InputProps={{
                   startAdornment: (
@@ -101,15 +106,14 @@ const Toolbar = ({ className, ...rest }) => {
                 }}
                 placeholder="Buscar guia"
                 variant="outlined"
-                onChange={handleChangeGuiaBus}
               />
               <Button 
                 variant="outlined" 
                 color="secondary" 
                 className={classes.butStyle}
                 onClick={() => {
-                  handleChangeListaGuia();
-                  handleClickOpen();
+                  handleClickOpen()
+                  getDataSpecific(idIn.id.in)
                 }}
               >
                 Buscar Guia
@@ -124,25 +128,18 @@ const Toolbar = ({ className, ...rest }) => {
                 <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Detalle de la guia"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-track" className={classes.form}>
-                        <p>
-                          <strong>Flete:</strong>
-                        </p>
-                        <p>
-                          <strong>Seguro:</strong> 
-                        </p>
-                        <p>
-                          <strong>Impuestos:</strong> 0
-                        </p>
-                        <br />
-                        <p>
-                            <strong>Total:</strong> 
-                        </p>
+                      Flete: {guias.calculos.flete}
+                      <br />
+                      Seguro: {guias.destinatario.vlrSeguro}
+                      <br />
+                      Impuestos: {guias.calculos.impuesto}
+                      <br />
+                      Total: {guias.calculos.total}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                   <Button 
                     onClick={() => {
-                      handleChangeGuia();
                       handleClose();
                     }}
                     type="submit"
@@ -165,7 +162,7 @@ const Toolbar = ({ className, ...rest }) => {
         </Card>
       </Box>
     </div>
-  );
+  )
 };
 
 Toolbar.propTypes = {
