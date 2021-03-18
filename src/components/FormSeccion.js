@@ -475,6 +475,7 @@ export default function FormSeccion() {
   const calculoTotal = () => {
     console.log('entro');
     const vlrFlete = guia.vlrLiquidacion.peso * cliente.vlrUnidad;
+    total = vlrFlete + cliente.vlrSeguro;
     guia.calculos.flete = vlrFlete.toFixed(2);
     if (guia.vlrLiquidacion.vlrDeclarado > 200){
       impuesto += total * 0.29;
@@ -484,7 +485,6 @@ export default function FormSeccion() {
       return true;
     } else {
       impuesto += 0;
-      total = vlrFlete + cliente.vlrSeguro;
       guia.calculos.impuesto = impuesto.toFixed(2);
       guia.calculos.total = total.toFixed(2);
       return false;
