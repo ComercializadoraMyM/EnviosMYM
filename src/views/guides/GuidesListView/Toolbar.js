@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  MenuItem
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 
@@ -48,6 +49,29 @@ const Toolbar = ({ className, ...rest }) => {
     setOpen(false);
   };
 
+  const nombreGuia = [
+    {
+      value: 'Bodega Miami',
+      label: 'Bodega Miami',
+    },
+    {
+      value: 'Transito',
+      label: 'Transito',
+    },
+    {
+      value: 'Bodega Bogota',
+      label: 'Bodega Bogota',
+    },
+    {
+      value: 'Espera Despacho',
+      label: 'Espera Despacho',
+    },
+    {
+      value: 'Entrega Cliente',
+      label: 'Entrega Cliente',
+    },
+  ];
+
   const [idIn, setIdIn] = React.useState (
     {
         id: {
@@ -65,7 +89,10 @@ const Toolbar = ({ className, ...rest }) => {
 
   const [guias, setGuias] = React.useState({
     "calculos": {},
-    "destinatario": {}
+    "destinatario": {},
+    "infGuia": {},
+    "vlrLiquidacion": {},
+    "datosEnvio": {}
   });
 
   const getDataSpecific = async (id) => {
@@ -75,6 +102,36 @@ const Toolbar = ({ className, ...rest }) => {
     } else {
       setGuias({"calculos": {}, "destinatario": {}});
     }
+  }
+
+  const [openAdd, setOpenAdd] = React.useState(false);
+
+  const handleClickOpenAdd = () => {
+    setOpenAdd(true);
+  };
+
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+  };
+
+  const [statusUpdate, setStatus] = React.useState('');
+
+  const handleChangeStatus = (event) => {
+    setStatus(event.target.value);
+  }
+
+  const handleChangeStatusBD = async () => {
+    await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia/" + statusUpdate + '/' + idUpdate, {
+      method: 'POST',
+    }).then(data => {
+      console.log();
+    });
+  }
+
+  const [idUpdate, setId] = React.useState('');
+
+  const handleEdit = async (id) => {
+    setId(id);
   }
 
   return (
@@ -127,6 +184,20 @@ const Toolbar = ({ className, ...rest }) => {
                 <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Detalle de la guia"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-track" className={classes.form}>
+                      Id: {guias._id}
+                      <br />
+                      Fecha Creacion: {guias.infGuia.fecha}
+                      <br />
+                      Nombre Destinatario: {guias.destinatario.nombre} 
+                      <br />
+                      Peso: {guias.vlrLiquidacion.peso} {guias.vlrLiquidacion.undPeso} 
+                      <br />
+                      Contenido: {guias.datosEnvio.descripcion}
+                      <br />
+                      Estado: {guias.status} 
+                      <br />
+                      Valor declarado: {guias.vlrLiquidacion.vlrDeclarado}
+                      <br />
                       Flete: {guias.calculos.flete}
                       <br />
                       Seguro: {guias.destinatario.vlrSeguro}
@@ -137,6 +208,62 @@ const Toolbar = ({ className, ...rest }) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
+                <Button
+                  color="secondary"
+                  variant="outlined"
+                  onClick={() => {
+                    handleEdit(guias._id);
+                    handleClickOpenAdd();
+                  }}
+                >
+                  Editar
+                  </Button>
+                <Dialog
+                  open={openAdd}
+                  onClose={handleCloseAdd}
+                  aria-labelledby="alert-track"
+                  aria-describedby="alert-track"
+                  width="200px"
+                >
+                  <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Modifique el Estado:"}</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-track" className={classes.form}>
+                      <TextField
+                        id="nomb"
+                        name="infGuia"
+                        select
+                        className={classes.margin}
+                        onChange={handleChangeStatus}
+                      >
+                        {nombreGuia.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={() => {
+                        handleChangeStatusBD();
+                        handleCloseAdd();
+                      }}
+                      type="submit"
+                      variant="outlined"
+                      color="primary"
+                    >
+                      Cambiar
+                        </Button>
+                    <Button
+                      onClick={handleCloseAdd}
+                      variant="outlined"
+                      color="primary"
+                    >
+                      Cerrar
+                        </Button>
+                  </DialogActions>
+                </Dialog>
                   <Button 
                     onClick={handleClose} 
                     variant="outlined" 

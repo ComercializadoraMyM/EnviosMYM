@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Paper from '@material-ui/core/Paper';
-import { 
-    makeStyles,
-    Box,
-    Collapse,
-    IconButton,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,  
-    TableHead,
-    TableRow,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    TextField,
-    MenuItem
+import jsPDF from 'jspdf';
+import {
+  makeStyles,
+  Box,
+  Collapse,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  MenuItem
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
@@ -40,7 +41,10 @@ const useRowStyles = makeStyles({
     form: {
       width: '500px',
       textAlign: 'center'
-    }
+    },
+    imgShow: {
+      display: 'none',
+    },
   },
 });
 
@@ -73,7 +77,7 @@ function Row(props) {
   ];
 
   const [openAdd, setOpenAdd] = React.useState(false);
-    
+
   const handleClickOpenAdd = () => {
     setOpenAdd(true);
   };
@@ -85,21 +89,71 @@ function Row(props) {
   const [statusUpdate, setStatus] = React.useState('');
 
   const handleChangeStatus = (event) => {
-    setStatus (event.target.value);
+    setStatus(event.target.value);
   }
 
   const [idUpdate, setId] = React.useState('');
 
-  const handleEdit = async(id) => {
+  const handleEdit = async (id) => {
     setId(id);
   }
 
-  const handleChangeStatusBD = async() => {
-    await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia/"+statusUpdate+'/'+idUpdate, {
-      method: 'POST', 
-    }).then(data=>{
-      console.log ();
-    }); 
+  const generatePdf = () => {
+    var JsBarcode = require('jsbarcode');
+    JsBarcode("#code128", idUpdate, { format: "code128" });
+    const img = document.querySelector('img#code128');
+    const logo = new Image();
+    logo.src = '/static/images/avatars/guia.png';
+    const doc = new jsPDF('p', 'pt');
+    doc.addImage(logo, 'PNG', 20, 30, 550, 196);
+    doc.addImage(img.src, 'JPEG', 50, 81, 220, 46);
+    doc.setFontSize(15);
+    doc.setFont('verdana', 'normal');
+    doc.setFontSize('10');
+    doc.text(350, 118, row.infGuia.fecha);
+    doc.text(350, 95, idUpdate.toString());
+    doc.text(70, 221, row.vlrLiquidacion.rowpeso + ' ' + row.vlrLiquidacion.undPeso);
+    doc.text(370, 221, row.datosEnvio.descripcion);
+    doc.text(360, 158, row.destinatario.nombre);
+    doc.text(360, 169, row.destinatario.telefono);
+    doc.text(360, 179, row.destinatario.pais);
+    doc.text(360, 189, row.destinatario.ciudad);
+    doc.text(360, 200, row.destinatario.direccion);
+    img.style.display = 'none';
+    doc.save('guia.pdf');
+  };
+
+  const generateZebra = () => {
+    var JsBarcode = require('jsbarcode');
+    JsBarcode("#code128", idUpdate, { format: "code128" });
+    const img = document.querySelector('img#code128');
+    const logo = new Image();
+    logo.src = '/static/images/avatars/guia-zebra.png';
+    const doc = new jsPDF('l', 'cm', [7, 10]);
+    doc.addImage(logo, 'PNG', 0.5, 0.5, 9, 6);
+    doc.addImage(img.src, 'JPEG', 2.2, 0.58, 6, 1);
+    doc.setFontSize(15);
+    doc.setFont('verdana', 'normal');
+    doc.setFontSize('5');
+    doc.text(5.9, 1.89, row.infGuia.fecha);
+    doc.text(1.2, 1.87, idUpdate.toString());
+    doc.text(1.2, 6.04, row.vlrLiquidacion.peso + ' ' + row.vlrLiquidacion.undPeso);
+    doc.text(1.8, 5.84, row.datosEnvio.descripcion);
+    doc.text(2.2, 4.25, row.destinatario.nombre);
+    doc.text(2.2, 4.45, row.destinatario.pais);
+    doc.text(2.2, 4.65, row.destinatario.ciudad);
+    doc.text(2.2, 4.85, row.destinatario.direccion);
+    doc.text(2.2, 5.05, row.destinatario.telefono);
+    img.style.display = 'none';
+    doc.save('guia.pdf');
+  };
+
+  const handleChangeStatusBD = async () => {
+    await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia/" + statusUpdate + '/' + idUpdate, {
+      method: 'POST',
+    }).then(data => {
+      console.log();
+    });
   }
 
   return (
@@ -122,73 +176,79 @@ function Row(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-                <div className={classes.typography}>
-                    <p>Valor declarado: {row.vlrLiquidacion.vlrDeclarado}</p>
-                    <p>Tipo de pago: {row.vlrLiquidacion.tipoPago}</p>
-                    <p>Medio de pago: {row.vlrLiquidacion.medioPago} </p>
-                    <p>Tipo de envio: {row.vlrLiquidacion.tipoEnvio} </p>
-                    <p>Pais de pago: {row.vlrLiquidacion.paisPago} </p>
-                    <p>Flete: {row.calculos.flete} </p>
-                    <p>impuesto: {row.calculos.impuesto} </p>
-                    <p>Total: {row.calculos.total} </p>
-                </div>
-                <br />
-                <Button 
-                  color="secondary" 
-                  variant="outlined" 
-                  onClick={()=>{
-                    handleEdit(row._id);
-                    handleClickOpenAdd();
-                  }}
-                > 
-                  Editar 
-                </Button>  
-                <Dialog
-                    open={openAdd}
-                    onClose={handleCloseAdd}
-                    aria-labelledby="alert-track"
-                    aria-describedby="alert-track"
-                    width="200px"
-                >
-                    <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Modifique el Estado:"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-track" className={classes.form}>
-                          <TextField
-                            id="nomb"
-                            name="infGuia"
-                            select
-                            className={classes.margin}
-                            onChange={handleChangeStatus}
-                          >
-                            {nombreGuia.map((option) => (
-                              <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button 
-                        onClick={() => {
-                          handleChangeStatusBD();
-                          handleCloseAdd();
-                        }}
-                        type="submit"
-                        variant="outlined" 
-                        color="primary"
-                      >
-                        Cambiar
+              <div className={classes.typography}>
+                <p>Tipo de pago: {row.vlrLiquidacion.tipoPago}</p>
+                <p>Medio de pago: {row.vlrLiquidacion.medioPago} </p>
+                <p>Tipo de envio: {row.vlrLiquidacion.tipoEnvio} </p>
+                <p>Pais de pago: {row.vlrLiquidacion.paisPago} </p>
+                <p>Flete: {row.calculos.flete} </p>
+                <p>impuesto: {row.calculos.impuesto} </p>
+                <p>Total: {row.calculos.total} </p>
+              </div>
+              <br />
+              <Button
+                color="secondary"
+                variant="outlined"
+                onClick={() => {
+                  handleEdit(row._id);
+                  handleClickOpenAdd();
+                }}
+              >
+                Editar
+                </Button>
+              <Dialog
+                open={openAdd}
+                onClose={handleCloseAdd}
+                aria-labelledby="alert-track"
+                aria-describedby="alert-track"
+                width="200px"
+              >
+                <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Modifique el Estado:"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-track" className={classes.form}>
+                    <TextField
+                      id="nomb"
+                      name="infGuia"
+                      select
+                      className={classes.margin}
+                      onChange={handleChangeStatus}
+                    >
+                      {nombreGuia.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={() => {
+                      handleChangeStatusBD();
+                      handleCloseAdd();
+                    }}
+                    type="submit"
+                    variant="outlined"
+                    color="primary"
+                  >
+                    Cambiar
                       </Button>
-                      <Button 
-                        onClick={handleCloseAdd} 
-                        variant="outlined" 
-                        color="primary" 
-                      >
-                        Cerrar
+                  <Button
+                    onClick={handleCloseAdd}
+                    variant="outlined"
+                    color="primary"
+                  >
+                    Cerrar
                       </Button>
-                    </DialogActions>
-                </Dialog>            
+                </DialogActions>
+              </Dialog>
+              <img id='code128' alt='  ' display='none' />
+              <Button variant="outlined" color="primary" onClick={()=>{handleEdit(row._id);generatePdf()}} className={classes.butPrint}>
+                Impresora Papel
+              </Button>
+              <Button variant="outlined" color="primary" onClick={()=>{handleEdit(row._id);generateZebra()}} className={classes.butPrint}>
+                Impresora Zebra
+              </Button>
             </Box>
           </Collapse>
         </TableCell>
@@ -198,17 +258,17 @@ function Row(props) {
 }
 
 export default function CollapsibleGuides(props) {
-    const [employees, setEmployees] = useState([]);
-    const URL = 'http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia';
+  const [employees, setEmployees] = useState([]);
+  const URL = 'http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia';
 
-    useEffect(() => {
-        getData()
-    }, [])
+  useEffect(() => {
+    getData()
+  }, [])
 
-    const getData = async () => {
-        const response = await axios.get(URL)
-        setEmployees(response.data)
-    }
+  const getData = async () => {
+    const response = await axios.get(URL)
+    setEmployees(response.data)
+  }
 
   return (
     <TableContainer component={Paper}>
@@ -224,7 +284,7 @@ export default function CollapsibleGuides(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {employees.map((guia) => (
+          {employees.reverse().map((guia) => (
             <Row key={guia._id} row={guia} />
           ))}
         </TableBody>

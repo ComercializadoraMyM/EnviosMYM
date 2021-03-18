@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import jsPDF from 'jspdf';
+import MuiAlert from '@material-ui/lab/Alert';
 import {
   makeStyles,
   TextField,
@@ -16,12 +17,16 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  Snackbar,
 } from '@material-ui/core';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 var total = 0;
 var impuesto = 0;
-var idGuia = '';
 
 const pesos = [
   {
@@ -102,22 +107,22 @@ const mediosPagos = [
 ];
 
 const nombreGuia = [
-    {
-      value: 'David Mejia',
-      label: 'David Mejia',
-    },
-    {
-      value: 'Fernando Mejia',
-      label: 'Fernando Mejia',
-    },
-    {
-      value: 'Eddyt Vera',
-      label: 'Eddyt Vera',
-    },
-    {
-      value: 'Alejandra Mejia',
-      label: 'Alejandra Mejia',
-    },
+  {
+    value: 'David Mejia',
+    label: 'David Mejia',
+  },
+  {
+    value: 'Fernando Mejia',
+    label: 'Fernando Mejia',
+  },
+  {
+    value: 'Eddyt Vera',
+    label: 'Eddyt Vera',
+  },
+  {
+    value: 'Alejandra Mejia',
+    label: 'Alejandra Mejia',
+  },
 ];
 
 const envios = [
@@ -216,7 +221,13 @@ const useStyles = makeStyles((theme) => ({
   },
   imgShow: {
     display: 'none',
-  }, 
+  },
+  snack: {
+    width: '100%',
+    '& > * + *': {
+      marginTop: theme.spacing(2),
+    },
+  },
 }));
 
 export default function FormSeccion() {
@@ -354,43 +365,43 @@ export default function FormSeccion() {
 
   const [clientes, setNombCliente] = React.useState([]);
 
-  const handleChangeListaClientes = async() => {
+  const handleChangeListaClientes = async () => {
     await fetch('http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/cliente')
-    .then(function(response) {
+      .then(function (response) {
         return response.json();
-    }).then(data=>{
-      setNombCliente(data);
-    })
-    .catch(function(err) {
+      }).then(data => {
+        setNombCliente(data);
+      })
+      .catch(function (err) {
         console.error(err);
-    });
+      });
   }
 
   const [cliente, setCliente] = React.useState('');
 
-  const handleChangeCliente = async(event) => {
+  const handleChangeCliente = async (event) => {
     guia[event.target.name] = event.target.value;
     setGuia(guia);
     setCliente(event.target.value);
   };
 
-  const handleChangeBD = async() => {
+  const handleChangeBD = async () => {
     var prueba = { "guia": JSON.stringify(guia) };
     await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia", {
-      method: 'POST', 
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(prueba)
-    }).then(data=>{
-      idGuia = prueba._id;
-      console.log (guia);
+    }).then(data => {
+      //idGuia = prueba._id;
+      console.log(guia);
     });
   }
 
   const generatePdf = () => {
     var JsBarcode = require('jsbarcode');
-    JsBarcode("#code128", idGuia, {format: "code128"});
+    JsBarcode("#code128", idGuia, { format: "code128" });
     const img = document.querySelector('img#code128');
     const logo = new Image();
     logo.src = '/static/images/avatars/guia.png';
@@ -402,7 +413,7 @@ export default function FormSeccion() {
     doc.setFontSize('10');
     doc.text(350, 118, guia.infGuia.fecha);
     doc.text(350, 95, idGuia.toString());
-    doc.text(70, 221, guia.vlrLiquidacion.peso+' '+guia.vlrLiquidacion.undPeso);
+    doc.text(70, 221, guia.vlrLiquidacion.peso + ' ' + guia.vlrLiquidacion.undPeso);
     doc.text(370, 221, guia.datosEnvio.descripcion);
     doc.text(360, 158, cliente.nombre);
     doc.text(360, 169, cliente.telefono);
@@ -416,7 +427,7 @@ export default function FormSeccion() {
 
   const generateZebra = () => {
     var JsBarcode = require('jsbarcode');
-    JsBarcode("#code128", idGuia, {format: "code128"});
+    JsBarcode("#code128", idGuia, { format: "code128" });
     const img = document.querySelector('img#code128');
     const logo = new Image();
     logo.src = '/static/images/avatars/guia-zebra.png';
@@ -428,7 +439,7 @@ export default function FormSeccion() {
     doc.setFontSize('5');
     doc.text(5.9, 1.89, guia.infGuia.fecha);
     doc.text(1.2, 1.87, idGuia.toString());
-    doc.text(1.2, 6.04, guia.vlrLiquidacion.peso+' '+guia.vlrLiquidacion.undPeso);
+    doc.text(1.2, 6.04, guia.vlrLiquidacion.peso + ' ' + guia.vlrLiquidacion.undPeso);
     doc.text(1.8, 5.84, guia.datosEnvio.descripcion);
     doc.text(2.2, 4.25, cliente.nombre);
     doc.text(2.2, 4.45, cliente.pais);
@@ -449,23 +460,12 @@ export default function FormSeccion() {
     setOpen(false);
   };
 
-  const [openEnvio, setOpenEnvio] = React.useState(false);
-
   const [guiaBD, setGuiaBD] = React.useState([]);
 
-  const handleClickOpenEnvio = async() => {
+  const [openEnvio, setOpenEnvio] = React.useState(false);
+
+  const handleClickOpenEnvio = async () => {
     setOpenEnvio(true);
-    await fetch('http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia')
-    .then(function(response) {
-        return response.json();
-    }).then(data=>{
-      setGuiaBD(data);
-      idGuia = guiaBD[guiaBD.length - 1]._id;
-      console.log(idGuia);
-    })
-    .catch(function(err) {
-        console.error(err);
-    });
   };
 
   const handleCloseEnvio = () => {
@@ -473,11 +473,10 @@ export default function FormSeccion() {
   };
 
   const calculoTotal = () => {
-    console.log('entro');
     const vlrFlete = guia.vlrLiquidacion.peso * cliente.vlrUnidad;
     total = vlrFlete + cliente.vlrSeguro;
     guia.calculos.flete = vlrFlete.toFixed(2);
-    if (guia.vlrLiquidacion.vlrDeclarado > 200){
+    if (guia.vlrLiquidacion.vlrDeclarado > 200) {
       impuesto += guia.vlrLiquidacion.vlrDeclarado * 0.29;
       total += impuesto;
       guia.calculos.impuesto = impuesto.toFixed(2);
@@ -490,10 +489,56 @@ export default function FormSeccion() {
       return false;
     }
   }
-  
+
+  const [idGuia, setId] = React.useState('');
+
+  const handleEdit = async () => {
+    setId(guiaBD[guiaBD.length - 1]._id);
+    console.log(idGuia);
+  }
+
+  const [openSnack, setOpenSnack] = React.useState(false);
+
+  const handleClickSnack = async () => {
+    setOpenSnack(true);
+    await fetch('http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia')
+      .then(function (response) {
+        return response.json();
+      }).then(data => {
+        setGuiaBD(data);
+      })
+      .catch(function (err) {
+        console.error(err);
+      });
+  };
+
+  const handleCloseSnack = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnack(false);
+  };
+
+  const [openCarga, setOpenCarga] = React.useState(false);
+
+  const handleClickCarga = async () => {
+    setOpenCarga(true);
+    setId(guiaBD[guiaBD.length - 1]._id);
+    console.log(idGuia);
+  };
+
+  const handleCloseCarga = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenCarga(false);
+  };
+
   return (
     <div className={classes.root}>
-    <Grid container spacing={3}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <h2 className={classes.tit}>Informacion de la Guia</h2>
@@ -523,7 +568,7 @@ export default function FormSeccion() {
                 onChange={handleChangeGuia}
                 className={classes.margin}
                 InputLabelProps={{
-                shrink: true,
+                  shrink: true,
                 }}
               />
             </form>
@@ -531,8 +576,8 @@ export default function FormSeccion() {
         </Grid>
       </Grid>
       <Grid container spacing={3}>
-      <Grid item xs={6}>
-        <Paper className={classes.paper1}>
+        <Grid item xs={6}>
+          <Paper className={classes.paper1}>
             <h2 className={classes.tit}>Remitente</h2>
             {remitente.map((rem) => (
               <div>
@@ -568,7 +613,7 @@ export default function FormSeccion() {
           <Paper className={classes.paper1}>
             <h2 className={classes.tit}>Destinatario</h2>
             <form noValidate>
-            <TextField
+              <TextField
                 id="nombre"
                 name="destinatario"
                 className={clsx(classes.margin)}
@@ -583,26 +628,26 @@ export default function FormSeccion() {
                   </MenuItem>
                 ))}
               </TextField>
-                <p className={classes.paragr}>
-                  <strong>Direccion:</strong>
-                  {cliente.direccion}
-                </p>
-                <p className={classes.paragr}>
-                  <strong>Pais:</strong>
-                  {cliente.pais}
-                </p>
-                <p className={classes.paragr}>
-                  <strong>Ciudad:</strong>
-                  {cliente.ciudad}
-                </p>
-                <p className={classes.paragr}>
-                  <strong>Email:</strong>
-                  {cliente.email}
-                </p>
-                <p className={classes.paragr}>
-                  <strong>Telefono:</strong>
-                  {cliente.telefono}
-                </p>
+              <p className={classes.paragr}>
+                <strong>Direccion:</strong>
+                {cliente.direccion}
+              </p>
+              <p className={classes.paragr}>
+                <strong>Pais:</strong>
+                {cliente.pais}
+              </p>
+              <p className={classes.paragr}>
+                <strong>Ciudad:</strong>
+                {cliente.ciudad}
+              </p>
+              <p className={classes.paragr}>
+                <strong>Email:</strong>
+                {cliente.email}
+              </p>
+              <p className={classes.paragr}>
+                <strong>Telefono:</strong>
+                {cliente.telefono}
+              </p>
             </form>
           </Paper>
         </Grid>
@@ -610,7 +655,7 @@ export default function FormSeccion() {
           <Paper className={classes.paper}>
             <h2 className={classes.tit}>Datos del Envio</h2>
             <form>
-            <TextField
+              <TextField
                 id="unidad"
                 name="datosEnvio"
                 className={clsx(classes.marginXS)}
@@ -769,9 +814,9 @@ export default function FormSeccion() {
             </form>
             <br />
             <br />
-            <Button 
-              variant="outlined" 
-              color="primary" 
+            <Button
+              variant="outlined"
+              color="primary"
               onClick={() => {
                 calculoTotal();
                 handleClickOpen();
@@ -781,76 +826,96 @@ export default function FormSeccion() {
               Calcular
             </Button>
             <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title" className={classes.dialogstyle}>{"El valor del envio es:"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        <p>
-                          <strong>Flete:</strong> {guia.vlrLiquidacion.peso*cliente.vlrUnidad}
-                        </p>
-                        <p>
-                          <strong>Seguro:</strong> {cliente.vlrSeguro}
-                        </p>
-                        <p>
-                          <strong>Impuestos:</strong> {impuesto.toFixed(2)}
-                        </p>
-                        <br />
-                        <p>
-                            <strong>Total:</strong> {total.toFixed(2)}
-                        </p>
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary" autoFocus>
-                        Cerrar
+              <DialogTitle id="alert-dialog-title" className={classes.dialogstyle}>{"El valor del envio es:"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  <p>
+                    <strong>Flete:</strong> {guia.vlrLiquidacion.peso * cliente.vlrUnidad}
+                  </p>
+                  <p>
+                    <strong>Seguro:</strong> {cliente.vlrSeguro}
+                  </p>
+                  <p>
+                    <strong>Impuestos:</strong> {impuesto.toFixed(2)}
+                  </p>
+                  <br />
+                  <p>
+                    <strong>Total:</strong> {total.toFixed(2)}
+                  </p>
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose} color="primary" autoFocus>
+                  Cerrar
                     </Button>
-                </DialogActions>
+              </DialogActions>
             </Dialog>
             <br />
-            <p className={classes.paragr}>** Primero enviar para despues descargar</p>
+            <p className={classes.paragr}>** Primero enviar y luego cargar para despues descargar</p>
             <Button
               variant="outlined"
               color="primary"
-              onClick={handleChangeBD}
+              onClick={() => {
+                handleChangeBD();
+                handleClickSnack();
+              }}
               className={clsx(classes.margin, classes.butt)}
               type="submit"
             >
               Enviar
             </Button>
+            <Snackbar open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+              <Alert onClose={handleCloseSnack} severity="success">
+                Guia Enviada!
+              </Alert>
+            </Snackbar>
+            <br />
+            <Button variant="outlined" color="primary" onClick={() => {
+              handleClickCarga();
+            }} className={clsx(classes.margin, classes.butt)}>
+              Cargar PDF
+            </Button>
+            <Snackbar open={openCarga} autoHideDuration={6000} onClose={handleCloseCarga}>
+              <Alert onClose={handleCloseCarga} severity="success">
+                PDF listo para descargar!
+              </Alert>
+            </Snackbar>
             <br />
             <Button
               variant="outlined"
               color="secondary"
-              onClick={handleClickOpenEnvio}
+              onClick={() => {
+                handleEdit();
+                handleClickOpenEnvio();
+              }}
               className={clsx(classes.margin, classes.butPrint)}
               type="submit"
             >
-              {idGuia=guiaBD._id}
               Descargar
             </Button>
             <Dialog
-                open={openEnvio}
-                onClose={handleCloseEnvio}
-                aria-labelledby="alert-dialog-envio"
+              open={openEnvio}
+              onClose={handleCloseEnvio}
+              aria-labelledby="alert-dialog-envio"
             >
-                <DialogTitle id="alert-dialog-envio" className={classes.dialogstyle}>{"La guia se ha enviado satisfactoriamente"}</DialogTitle>
-                  <img id='code128' alt='codigo de barras' className={classes.imgShow} />
-                  <p>{idGuia}</p>
-                  <Button variant="outlined" color="primary" onClick={generatePdf} className={classes.butPrint}>
-                    Impresora Papel
+              <DialogTitle id="alert-dialog-envio" className={classes.dialogstyle}>{"Descargue la informacion"}</DialogTitle>
+              <img id='code128' alt='codigo de barras' className={classes.imgShow} />
+              <Button variant="outlined" color="primary" onClick={generatePdf} className={classes.butPrint}>
+                Impresora Papel
                   </Button>
-                  <Button variant="outlined" color="primary" onClick={generateZebra} className={classes.butPrint}>
-                    Impresora Zebra
-                  </Button> 
-                <DialogActions>
-                    <Button onClick={handleCloseEnvio} color="primary" autoFocus>
-                        Cerrar
+              <Button variant="outlined" color="primary" onClick={generateZebra} className={classes.butPrint}>
+                Impresora Zebra
+                  </Button>
+              <DialogActions>
+                <Button onClick={handleCloseEnvio} color="primary" autoFocus>
+                  Cerrar
                     </Button>
-                </DialogActions>
+              </DialogActions>
             </Dialog>
           </Paper>
         </Grid>
