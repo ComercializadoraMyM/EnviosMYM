@@ -478,7 +478,7 @@ export default function FormSeccion() {
     total = vlrFlete + cliente.vlrSeguro;
     guia.calculos.flete = vlrFlete.toFixed(2);
     if (guia.vlrLiquidacion.vlrDeclarado > 200){
-      impuesto += total * 0.29;
+      impuesto += guia.vlrLiquidacion.vlrDeclarado * 0.29;
       total += impuesto;
       guia.calculos.impuesto = impuesto.toFixed(2);
       guia.calculos.total = total.toFixed(2);
