@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const URL = 'http://localhost:3001/api/cliente';
+const URL = 'http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/cliente';
 
 const TableClients = (className, ...rest) => {
     const classes = useStyles();
@@ -111,7 +111,7 @@ const TableClients = (className, ...rest) => {
 
     const handleChangeBD = async() => {
         var prueba = { "cliente": JSON.stringify(cliente) };
-        await fetch("http://localhost:3001/api/cliente", {
+        await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/cliente", {
         method: 'POST', 
         headers: {
             'Content-Type': 'application/json'

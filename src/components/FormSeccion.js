@@ -355,7 +355,7 @@ export default function FormSeccion() {
   const [clientes, setNombCliente] = React.useState([]);
 
   const handleChangeListaClientes = async() => {
-    await fetch('http://localhost:3001/api/cliente')
+    await fetch('http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/cliente')
     .then(function(response) {
         return response.json();
     }).then(data=>{
@@ -376,7 +376,7 @@ export default function FormSeccion() {
 
   const handleChangeBD = async() => {
     var prueba = { "guia": JSON.stringify(guia) };
-    await fetch("http://localhost:3001/api/guia", {
+    await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia", {
       method: 'POST', 
       headers: {
         'Content-Type': 'application/json'
@@ -455,7 +455,7 @@ export default function FormSeccion() {
 
   const handleClickOpenEnvio = async() => {
     setOpenEnvio(true);
-    await fetch('http://localhost:3001/api/guia')
+    await fetch('http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia')
     .then(function(response) {
         return response.json();
     }).then(data=>{

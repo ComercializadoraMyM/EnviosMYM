@@ -61,7 +61,7 @@ const Toolbar = ({ className, ...rest }) => {
     setIdIn(idIn);
   };
 
-  const URL = 'http://localhost:3001/api/guia';
+  const URL = 'http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia';
 
   const [guias, setGuias] = React.useState({
     "calculos": {},
@@ -70,7 +70,6 @@ const Toolbar = ({ className, ...rest }) => {
 
   const getDataSpecific = async (id) => {
     const response = await axios.get(`${URL}/${id}`)
-    console.log(response.data.length)
     if (response.data.length > 0){
       setGuias(response.data[0])
     } else {
@@ -138,16 +137,6 @@ const Toolbar = ({ className, ...rest }) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                  <Button 
-                    onClick={() => {
-                      handleClose();
-                    }}
-                    type="submit"
-                    variant="outlined" 
-                    color="primary"
-                  >
-                    Modificar
-                  </Button>
                   <Button 
                     onClick={handleClose} 
                     variant="outlined" 

@@ -11,7 +11,15 @@ import {
     TableCell,
     TableContainer,  
     TableHead,
-    TableRow
+    TableRow,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    TextField,
+    MenuItem
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
@@ -22,6 +30,17 @@ const useRowStyles = makeStyles({
     '& > *': {
       borderBottom: 'unset',
     },
+    margin: {
+      width: '300px'
+    },
+    dialogstyle: {
+      width: '400px',
+      alignSelf: 'center',
+    },
+    form: {
+      width: '500px',
+      textAlign: 'center'
+    }
   },
 });
 
@@ -29,6 +48,59 @@ function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+
+  const nombreGuia = [
+    {
+      value: 'Bodega Miami',
+      label: 'Bodega Miami',
+    },
+    {
+      value: 'Transito',
+      label: 'Transito',
+    },
+    {
+      value: 'Bodega Bogota',
+      label: 'Bodega Bogota',
+    },
+    {
+      value: 'Espera Despacho',
+      label: 'Espera Despacho',
+    },
+    {
+      value: 'Entrega Cliente',
+      label: 'Entrega Cliente',
+    },
+  ];
+
+  const [openAdd, setOpenAdd] = React.useState(false);
+    
+  const handleClickOpenAdd = () => {
+    setOpenAdd(true);
+  };
+
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+  };
+
+  const [statusUpdate, setStatus] = React.useState('');
+
+  const handleChangeStatus = (event) => {
+    setStatus (event.target.value);
+  }
+
+  const [idUpdate, setId] = React.useState('');
+
+  const handleEdit = async(id) => {
+    setId(id);
+  }
+
+  const handleChangeStatusBD = async() => {
+    await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia/"+statusUpdate+'/'+idUpdate, {
+      method: 'POST', 
+    }).then(data=>{
+      console.log ();
+    }); 
+  }
 
   return (
     <React.Fragment>
@@ -59,7 +131,64 @@ function Row(props) {
                     <p>Flete: {row.calculos.flete} </p>
                     <p>impuesto: {row.calculos.impuesto} </p>
                     <p>Total: {row.calculos.total} </p>
-                </div>              
+                </div>
+                <br />
+                <Button 
+                  color="secondary" 
+                  variant="outlined" 
+                  onClick={()=>{
+                    handleEdit(row._id);
+                    handleClickOpenAdd();
+                  }}
+                > 
+                  Editar 
+                </Button>  
+                <Dialog
+                    open={openAdd}
+                    onClose={handleCloseAdd}
+                    aria-labelledby="alert-track"
+                    aria-describedby="alert-track"
+                    width="200px"
+                >
+                    <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Modifique el Estado:"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-track" className={classes.form}>
+                          <TextField
+                            id="nomb"
+                            name="infGuia"
+                            select
+                            className={classes.margin}
+                            onChange={handleChangeStatus}
+                          >
+                            {nombreGuia.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button 
+                        onClick={() => {
+                          handleChangeStatusBD();
+                          handleCloseAdd();
+                        }}
+                        type="submit"
+                        variant="outlined" 
+                        color="primary"
+                      >
+                        Cambiar
+                      </Button>
+                      <Button 
+                        onClick={handleCloseAdd} 
+                        variant="outlined" 
+                        color="primary" 
+                      >
+                        Cerrar
+                      </Button>
+                    </DialogActions>
+                </Dialog>            
             </Box>
           </Collapse>
         </TableCell>
@@ -70,7 +199,7 @@ function Row(props) {
 
 export default function CollapsibleGuides(props) {
     const [employees, setEmployees] = useState([]);
-    const URL = 'http://localhost:3001/api/guia';
+    const URL = 'http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia';
 
     useEffect(() => {
         getData()
