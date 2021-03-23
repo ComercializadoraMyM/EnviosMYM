@@ -366,7 +366,7 @@ export default function FormSeccion() {
   const [clientes, setNombCliente] = React.useState([]);
 
   const handleChangeListaClientes = async () => {
-    await fetch('http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/cliente')
+    await fetch('https://envios-api-service.herokuapp.com/api/clientes')
       .then(function (response) {
         return response.json();
       }).then(data => {
@@ -387,7 +387,7 @@ export default function FormSeccion() {
 
   const handleChangeBD = async () => {
     var prueba = { "guia": JSON.stringify(guia) };
-    await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia", {
+    await fetch("https://envios-api-service.herokuapp.com/api/guias", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -501,7 +501,7 @@ export default function FormSeccion() {
 
   const handleClickSnack = async () => {
     setOpenSnack(true);
-    await fetch('http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia')
+    await fetch('https://envios-api-service.herokuapp.com/api/guias')
       .then(function (response) {
         return response.json();
       }).then(data => {

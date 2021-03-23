@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const URL = 'http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/cliente';
+const URL = 'https://envios-api-service.herokuapp.com/api/clientes';
 
 const TableClients = (className, ...rest) => {
     const classes = useStyles();
@@ -111,7 +111,7 @@ const TableClients = (className, ...rest) => {
 
     const handleChangeBD = async() => {
         var prueba = { "cliente": JSON.stringify(cliente) };
-        await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/cliente", {
+        await fetch("https://envios-api-service.herokuapp.com/api/clientes", {
         method: 'POST', 
         headers: {
             'Content-Type': 'application/json'

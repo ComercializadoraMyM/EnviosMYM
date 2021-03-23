@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const URL = 'http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/tracking';
+const URL = 'https://envios-api-service.herokuapp.com/api/trackings';
 
 const TableGuide = (className, ...rest) => {
     const classes = useStyles();
@@ -65,7 +65,7 @@ const TableGuide = (className, ...rest) => {
 
     const handleChangeBDTracking = async() => {
         var prueba = { "tracking": JSON.stringify(trackings) };
-        await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/tracking", {
+        await fetch("https://envios-api-service.herokuapp.com/api/trackings", {
           method: 'POST', 
           headers: {
             'Content-Type': 'application/json'
@@ -77,7 +77,7 @@ const TableGuide = (className, ...rest) => {
       }
 
     const handleChangeWHRBD = async() => {
-        await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/tracking/"+whrUpdate+'/'+idUpdate, {
+        await fetch("https://envios-api-service.herokuapp.com/api/trackings/"+whrUpdate+'/'+idUpdate, {
           method: 'POST', 
         }).then(data=>{
           console.log (trackings);

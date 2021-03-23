@@ -149,7 +149,7 @@ function Row(props) {
   };
 
   const handleChangeStatusBD = async () => {
-    await fetch("http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia/" + statusUpdate + '/' + idUpdate, {
+    await fetch("https://envios-api-service.herokuapp.com/api/guias/" + statusUpdate + '/' + idUpdate, {
       method: 'POST',
     }).then(data => {
       console.log();
@@ -259,7 +259,7 @@ function Row(props) {
 
 export default function CollapsibleGuides(props) {
   const [employees, setEmployees] = useState([]);
-  const URL = 'http://ec2-3-88-143-243.compute-1.amazonaws.com:3001/api/guia';
+  const URL = 'https://envios-api-service.herokuapp.com/api/guias';
 
   useEffect(() => {
     getData()
