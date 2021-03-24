@@ -194,6 +194,20 @@ const TableClients = (className, ...rest) => {
         })
     }
 
+    const [openCarga, setOpenCarga] = React.useState(false);
+    
+    const handleClickCarga = async () => {
+    setOpenCarga(true);
+    };
+
+    const handleCloseCarga = (event, reason) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+
+    setOpenCarga(false);
+    };
+
     const renderBody = () => {
         return employees && employees.map(({ 
             _id,
@@ -372,6 +386,7 @@ const TableClients = (className, ...rest) => {
                     onClick={() => {
                     handleChangeSegBD();
                     handleCloseS();
+                    handleClickCarga();
                     }}
                     type="submit"
                     variant="outlined" 
@@ -388,6 +403,11 @@ const TableClients = (className, ...rest) => {
                 </Button>
                 </DialogActions>
             </Dialog>
+            <Snackbar open={openCarga} autoHideDuration={6000} onClose={handleCloseCarga}>
+              <Alert onClose={handleCloseCarga} severity="success">
+                Cliente Editado!
+              </Alert>
+            </Snackbar>
         </Card>
     )
 };
