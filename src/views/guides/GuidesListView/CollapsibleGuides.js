@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Paper from '@material-ui/core/Paper';
 import jsPDF from 'jspdf';
+import MuiAlert from '@material-ui/lab/Alert';
 import {
   makeStyles,
   Box,
@@ -20,11 +21,16 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  MenuItem
+  MenuItem,
+  Snackbar
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import moment from 'moment';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useRowStyles = makeStyles({
   root: {
@@ -112,7 +118,7 @@ function Row(props) {
     doc.setFontSize('10');
     doc.text(350, 118, row.infGuia.fecha);
     doc.text(350, 95, idUpdate.toString());
-    doc.text(70, 221, row.vlrLiquidacion.rowpeso + ' ' + row.vlrLiquidacion.undPeso);
+    doc.text(70, 221, row.vlrLiquidacion.peso + ' ' + row.vlrLiquidacion.undPeso);
     doc.text(370, 221, row.datosEnvio.descripcion);
     doc.text(360, 158, row.destinatario.nombre);
     doc.text(360, 169, row.destinatario.telefono);
@@ -156,6 +162,28 @@ function Row(props) {
     });
   }
 
+  const handleDelete = async (idUp) => {
+    await fetch("http://localhost:3001/api/guias/" + idUp, {
+      method: 'DELETE',
+    }).then(data => {
+      console.log();
+    });
+  }
+
+  const [openCarga, setOpenCarga] = React.useState(false);
+
+  const handleClickCarga = async () => {
+    setOpenCarga(true);
+  };
+
+  const handleCloseCarga = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenCarga(false);
+  };
+
   return (
     <React.Fragment>
       <TableRow className={classes.root}>
@@ -171,9 +199,27 @@ function Row(props) {
         <TableCell >{row.destinatario.nombre}</TableCell>
         <TableCell >{row.vlrLiquidacion.peso}</TableCell>
         <TableCell >{row.status}</TableCell>
+        <TableCell >
+          <Button 
+            color='primary' 
+            className='button' 
+            onClick={() => 
+              {handleEdit(row._id);
+              handleDelete(row._id);
+              handleClickCarga();
+            }}
+          >
+            Eliminar
+          </Button>
+          <Snackbar open={openCarga} autoHideDuration={6000} onClose={handleCloseCarga}>
+            <Alert onClose={handleCloseCarga} severity="success">
+              Guia Eliminada!
+            </Alert>
+          </Snackbar>
+        </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <div className={classes.typography}>
@@ -188,14 +234,13 @@ function Row(props) {
               <br />
               <Button
                 color="secondary"
-                variant="outlined"
                 onClick={() => {
                   handleEdit(row._id);
                   handleClickOpenAdd();
                 }}
               >
                 Editar
-                </Button>
+              </Button>
               <Dialog
                 open={openAdd}
                 onClose={handleCloseAdd}
@@ -206,19 +251,21 @@ function Row(props) {
                 <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Modifique el Estado:"}</DialogTitle>
                 <DialogContent>
                   <DialogContentText id="alert-track" className={classes.form}>
-                    <TextField
-                      id="nomb"
-                      name="infGuia"
-                      select
-                      className={classes.margin}
-                      onChange={handleChangeStatus}
-                    >
-                      {nombreGuia.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
+                    <form>
+                      <TextField
+                        id="nomb"
+                        name="infGuia"
+                        select
+                        className={classes.margin}
+                        onChange={handleChangeStatus}
+                      >
+                        {nombreGuia.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </form>
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -242,11 +289,10 @@ function Row(props) {
                       </Button>
                 </DialogActions>
               </Dialog>
-              <img id='code128' alt='  ' display='none' />
-              <Button variant="outlined" color="primary" onClick={()=>{handleEdit(row._id);generatePdf()}} className={classes.butPrint}>
+              <Button color="primary" onClick={()=>{handleEdit(row._id);generatePdf()}} className={classes.butPrint}>
                 Impresora Papel
               </Button>
-              <Button variant="outlined" color="primary" onClick={()=>{handleEdit(row._id);generateZebra()}} className={classes.butPrint}>
+              <Button color="primary" onClick={()=>{handleEdit(row._id);generateZebra()}} className={classes.butPrint}>
                 Impresora Zebra
               </Button>
             </Box>
@@ -271,6 +317,7 @@ export default function CollapsibleGuides(props) {
   }
 
   return (
+    <div>
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
@@ -281,6 +328,7 @@ export default function CollapsibleGuides(props) {
             <TableCell>Nombre</TableCell>
             <TableCell>Peso</TableCell>
             <TableCell>Estado</TableCell>
+            <TableCell>Editar</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -290,5 +338,7 @@ export default function CollapsibleGuides(props) {
         </TableBody>
       </Table>
     </TableContainer>
+    <img id='code128' alt='  ' style={{display:'none'}}/>
+    </div>
   );
 }

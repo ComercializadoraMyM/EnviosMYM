@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import clsx from 'clsx';
+import MuiAlert from '@material-ui/lab/Alert';
 import {
     makeStyles,
     Button,
@@ -11,8 +12,13 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    TextField
+    TextField,
+    Snackbar
 } from '@material-ui/core';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -57,7 +63,7 @@ const TableGuide = (className, ...rest) => {
     }
 
     const renderHeader = () => {
-        let headerElement = ['Fecha', 'Tracking ID', 'Nombre Cliente', 'Peso', 'Num. Caja', 'WHR', 'Editar']
+        let headerElement = ['Fecha', 'Tracking ID', 'Nombre Cliente', 'Peso', 'Num. Caja', 'WHR', 'Editar', 'Eliminar']
         return headerElement.map((key, index) => {
             return <th key={index} margin="30px">{key}</th>
         })
@@ -132,6 +138,28 @@ const TableGuide = (className, ...rest) => {
         setId (id);
       }
 
+      const handleDelete = async (idUp) => {
+        await fetch("http://localhost:3001/api/trackings/" + idUp, {
+          method: 'DELETE',
+        }).then(data => {
+          console.log();
+        });
+      }
+    
+      const [openCarga, setOpenCarga] = React.useState(false);
+    
+      const handleClickCarga = async () => {
+        setOpenCarga(true);
+      };
+    
+      const handleCloseCarga = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setOpenCarga(false);
+      };
+
     const renderBody = () => {
         return employees && employees.map(({ 
             _id, 
@@ -161,40 +189,19 @@ const TableGuide = (className, ...rest) => {
                         >
                           WHR
                         </Button>
-                        <Dialog
-                            open={openAdd}
-                            onClose={handleCloseAdd}
-                            aria-labelledby="alert-track"
-                            aria-describedby="alert-track"
-                            width="200px"
+                      </td>
+                      <td>
+                        <Button 
+                          color='primary' 
+                          className='button' 
+                          onClick={() => 
+                            {handleChangeId(_id);
+                            handleDelete(_id);
+                            handleClickCarga();
+                          }}
                         >
-                            <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Agregue o Modifique el WHR:"}</DialogTitle>
-                            <DialogContent>
-                                <DialogContentText id="alert-track" className={classes.form}>
-                                  <TextField id="whr" label="WHR" className={classes.margin} onChange={handleChangeWHR} />
-                                </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                              <Button 
-                                onClick={() => {
-                                  handleChangeWHRBD();
-                                  handleCloseAdd();
-                                }}
-                                type="submit"
-                                variant="outlined" 
-                                color="primary"
-                              >
-                                Cambiar
-                              </Button>
-                              <Button 
-                                onClick={handleCloseAdd} 
-                                variant="outlined" 
-                                color="primary" 
-                              >
-                                Cerrar
-                              </Button>
-                            </DialogActions>
-                        </Dialog>
+                          Eliminar
+                        </Button>
                     </td>
                 </tr>
             )
@@ -270,6 +277,45 @@ const TableGuide = (className, ...rest) => {
                     {renderBody()}
                 </tbody>
             </table>
+            <Dialog
+                open={openAdd}
+                onClose={handleCloseAdd}
+                aria-labelledby="alert-track"
+                aria-describedby="alert-track"
+                width="200px"
+            >
+                <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Agregue o Modifique el WHR:"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-track" className={classes.form}>
+                      <TextField id="whr" label="WHR" className={classes.margin} onChange={handleChangeWHR} />
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button 
+                    onClick={() => {
+                      handleChangeWHRBD();
+                      handleCloseAdd();
+                    }}
+                    type="submit"
+                    variant="outlined" 
+                    color="primary"
+                  >
+                    Cambiar
+                  </Button>
+                  <Button 
+                    onClick={handleCloseAdd} 
+                    variant="outlined" 
+                    color="primary" 
+                  >
+                    Cerrar
+                  </Button>
+                </DialogActions>
+            </Dialog>
+            <Snackbar open={openCarga} autoHideDuration={6000} onClose={handleCloseCarga}>
+              <Alert onClose={handleCloseCarga} severity="success">
+                Entrada Eliminada!
+              </Alert>
+            </Snackbar>
         </Card>
     )
 };

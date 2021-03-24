@@ -814,6 +814,7 @@ export default function FormSeccion() {
             </form>
             <br />
             <br />
+            <p className={classes.paragr}>** Primero calcular, enviar y luego cargar para despues descargar</p>
             <Button
               variant="outlined"
               color="primary"
@@ -821,7 +822,7 @@ export default function FormSeccion() {
                 calculoTotal();
                 handleClickOpen();
               }}
-              className={classes.but}
+              className={clsx(classes.margin, classes.butt)}
             >
               Calcular
             </Button>
@@ -856,7 +857,6 @@ export default function FormSeccion() {
               </DialogActions>
             </Dialog>
             <br />
-            <p className={classes.paragr}>** Primero enviar y luego cargar para despues descargar</p>
             <Button
               variant="outlined"
               color="primary"

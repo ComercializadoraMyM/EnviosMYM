@@ -131,9 +131,64 @@ const TableClients = (className, ...rest) => {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const [openT, setOpenT] = React.useState(false);
+
+    const handleClickOpenT = () => {
+        setOpenT(true);
+    };
+
+    const handleCloseT = () => {
+        setOpenT(false);
+    };
+
+    const [openS, setOpenS] = React.useState(false);
+
+    const handleClickOpenS = () => {
+        setOpenS(true);
+    };
+
+    const handleCloseS = () => {
+        setOpenS(false);
+    };
+
+    const [idUpdate, setId] = React.useState('');
+
+    const handleEdit = async (id) => {
+        setId(id);
+        console.log(idUpdate);
+    }
+
+    const [tarNueva, setTar] = React.useState('');
+
+    const handleTar = async (event) => {
+        setTar(event.target.value);
+        console.log(tarNueva);
+    }
+
+    const [segNueva, setSeg] = React.useState('');
+
+    const handleSeg = async (event) => {
+        setSeg(event.target.value);
+        console.log(segNueva);
+    }
+
+    const handleChangeTarBD = async() => {
+        await fetch("https://envios-api-service.herokuapp.com/api/clientes/tarifa/"+tarNueva+'/'+idUpdate, {
+          method: 'POST', 
+        }).then(data=>{
+        }); 
+      }
+
+    const handleChangeSegBD = async() => {
+        await fetch("https://envios-api-service.herokuapp.com/api/clientes/seguro/"+segNueva+'/'+idUpdate, {
+          method: 'POST', 
+        }).then(data=>{
+        }); 
+      }
     
     const renderHeader = () => {
-        let headerElement = ['Identificacion', 'Nombre', 'Pais-Ciudad', 'Telefono', 'Direccion']
+        let headerElement = ['Identificacion', 'Nombre', 'Pais-Ciudad', 'Telefono', 'Direccion', 'Edicion']
         return headerElement.map((key, index) => {
             return <th key={index}>{key}</th>
         })
@@ -156,6 +211,30 @@ const TableClients = (className, ...rest) => {
                     <td>{`${pais} ${ciudad}`}</td>
                     <td>{telefono}</td>
                     <td>{direccion}</td>
+                    <td>
+                        <Button 
+                            color='primary' 
+                            className='button' 
+                            onClick={() => 
+                            {
+                                handleEdit(_id);
+                                handleClickOpenT()
+                            }}
+                        >
+                            Tarifa
+                        </Button>
+                        <Button 
+                            color='primary' 
+                            className='button' 
+                            onClick={() => 
+                            {
+                                handleEdit(_id);
+                                handleClickOpenS()
+                            }}
+                        >
+                            Seguro
+                        </Button>
+                    </td>
                 </tr>
             )
         })
@@ -241,6 +320,74 @@ const TableClients = (className, ...rest) => {
                     {renderBody()}
                 </tbody>
             </table>
+            <Dialog
+                open={openT}
+                onClose={handleCloseT}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                width="200px"
+            >
+                <DialogTitle id="alert-dialog-title" className={classes.dialogstyle}>{"Edicion Tarifa:"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" className={classes.form}>
+                    <TextField id='tarifa' label="Valor tarifa nueva" className={classes.margin} onChange={handleTar} />
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button 
+                    onClick={() => {
+                    handleChangeTarBD();
+                    handleCloseT();
+                    }}
+                    type="submit"
+                    variant="outlined" 
+                    color="primary"
+                >
+                    Cambiar
+                </Button>
+                <Button 
+                    onClick={handleCloseT} 
+                    variant="outlined" 
+                    color="primary" 
+                >
+                    Cerrar
+                </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openS}
+                onClose={handleCloseS}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                width="200px"
+            >
+                <DialogTitle id="alert-dialog-title" className={classes.dialogstyle}>{"Edicion seguro:"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" className={classes.form}>
+                    <TextField id="seguro" label="Valor seguro nuevo" className={classes.margin} onChange={handleSeg} />
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button 
+                    onClick={() => {
+                    handleChangeSegBD();
+                    handleCloseS();
+                    }}
+                    type="submit"
+                    variant="outlined" 
+                    color="primary"
+                >
+                    Cambiar
+                </Button>
+                <Button 
+                    onClick={handleCloseS} 
+                    variant="outlined" 
+                    color="primary" 
+                >
+                    Cerrar
+                </Button>
+                </DialogActions>
+            </Dialog>
         </Card>
     )
 };
