@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import clsx from 'clsx';
+import MuiAlert from '@material-ui/lab/Alert';
 import {
     makeStyles,
     Button,
@@ -11,9 +12,14 @@ import {
     DialogContentText,
     DialogTitle,
     TextField,
-    MenuItem
+    MenuItem,
+    Snackbar
 } from '@material-ui/core';
 
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  
 const tiposID = [
     {
         value: 'CC',
