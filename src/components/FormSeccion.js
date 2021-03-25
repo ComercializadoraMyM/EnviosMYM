@@ -473,19 +473,19 @@ export default function FormSeccion() {
   };
 
   const calculoTotal = () => {
-    const vlrFlete = guia.vlrLiquidacion.peso * cliente.vlrUnidad;
-    total = vlrFlete + cliente.vlrSeguro;
-    guia.calculos.flete = vlrFlete.toFixed(2);
+    const vlrFlete = parseFloat(guia.vlrLiquidacion.peso) * parseFloat(cliente.vlrUnidad);
+    total = vlrFlete + parseFloat(cliente.vlrSeguro);
+    guia.calculos.flete = parseFloat(vlrFlete.toFixed(2));
     if (guia.vlrLiquidacion.vlrDeclarado > 200) {
       impuesto += guia.vlrLiquidacion.vlrDeclarado * 0.29;
       total += impuesto;
-      guia.calculos.impuesto = impuesto.toFixed(2);
-      guia.calculos.total = total.toFixed(2);
+      guia.calculos.impuesto = parseFloat(impuesto.toFixed(2));
+      guia.calculos.total = parseFloat(total.toFixed(2));
       return true;
     } else {
       impuesto += 0;
-      guia.calculos.impuesto = impuesto.toFixed(2);
-      guia.calculos.total = total.toFixed(2);
+      guia.calculos.impuesto = parseFloat(impuesto.toFixed(2));
+      guia.calculos.total = parseFloat(total.toFixed(2));
       return false;
     }
   }
@@ -842,11 +842,11 @@ export default function FormSeccion() {
                     <strong>Seguro:</strong> {cliente.vlrSeguro}
                   </p>
                   <p>
-                    <strong>Impuestos:</strong> {impuesto.toFixed(2)}
+                    <strong>Impuestos:</strong> {parseFloat(impuesto.toFixed(2))}
                   </p>
                   <br />
                   <p>
-                    <strong>Total:</strong> {total.toFixed(2)}
+                    <strong>Total:</strong> {parseFloat(total.toFixed(2))}
                   </p>
                 </DialogContentText>
               </DialogContent>
