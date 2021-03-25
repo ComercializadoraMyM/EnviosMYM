@@ -161,9 +161,9 @@ const TableGuide = (className, ...rest) => {
       };
 
     const renderBody = () => {
-        return employees && employees.map(({ 
+        return employees && employees.reverse().map(({ 
             _id, 
-            fechaT, 
+            fecha, 
             track_id, 
             nombreCliente, 
             peso,
@@ -172,7 +172,7 @@ const TableGuide = (className, ...rest) => {
         }) => {
             return (
                 <tr key={_id}>
-                    <td>{moment(fechaT).format('DD/MM/YYYY')}</td>
+                    <td>{moment(fecha).format('DD/MM/YYYY')}</td>
                     <td>{track_id}</td>
                     <td>{nombreCliente}</td>
                     <td>{peso}</td>

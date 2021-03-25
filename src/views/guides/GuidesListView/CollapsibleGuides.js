@@ -195,7 +195,7 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {row._id}
         </TableCell>
-        <TableCell >{moment(row.fecha).format('DD/MM/YYYY')}</TableCell>
+        <TableCell >{moment(row.infGuia.fecha).format('DD/MM/YYYY')}</TableCell>
         <TableCell >{row.destinatario.nombre}</TableCell>
         <TableCell >{row.vlrLiquidacion.peso}</TableCell>
         <TableCell >{row.status}</TableCell>
