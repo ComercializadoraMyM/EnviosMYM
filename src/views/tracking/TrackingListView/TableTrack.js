@@ -139,7 +139,7 @@ const TableGuide = (className, ...rest) => {
       }
 
       const handleDelete = async (idUp) => {
-        await fetch("http://localhost:3001/api/trackings/" + idUp, {
+        await fetch("https://envios-api-service.herokuapp.com/api/trackings/" + idUp, {
           method: 'DELETE',
         }).then(data => {
           console.log();

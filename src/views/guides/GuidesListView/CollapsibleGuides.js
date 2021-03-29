@@ -163,7 +163,7 @@ function Row(props) {
   }
 
   const handleDelete = async (idUp) => {
-    await fetch("http://localhost:3001/api/guias/" + idUp, {
+    await fetch("https://envios-api-service.herokuapp.com/api/guias/" + idUp, {
       method: 'DELETE',
     }).then(data => {
       console.log();
