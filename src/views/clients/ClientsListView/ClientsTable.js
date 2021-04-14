@@ -287,7 +287,7 @@ export default function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {employees.map((row) => (
+          {employees.reverse.map((row) => (
             <TableRow key={row.id}>
               <TableCell component="th" scope="row">
                 {row.numid}
