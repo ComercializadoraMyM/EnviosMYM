@@ -5,7 +5,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
-import TableTrack from './TableTrack';
+import TableTrack from './TrackTable';
 
 const useStyles = makeStyles((theme) => ({
   root: {

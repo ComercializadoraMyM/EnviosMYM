@@ -5,7 +5,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
-import TableClients from './TableClients';
+import TableClients from './ClientsTable';
 
 const useStyles = makeStyles((theme) => ({
   root: {

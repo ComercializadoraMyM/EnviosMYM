@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import clsx from 'clsx';
 import MuiAlert from '@material-ui/lab/Alert';
+import clsx from 'clsx';
 import {
     makeStyles,
     Button,
-    Card,
     Dialog,
     DialogActions,
     DialogContent,
@@ -13,13 +12,20 @@ import {
     DialogTitle,
     TextField,
     MenuItem,
-    Snackbar
+    Snackbar,
+    Table, 
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper
 } from '@material-ui/core';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
-  
+}
+
 const tiposID = [
     {
         value: 'CC',
@@ -43,16 +49,10 @@ const tiposID = [
     },
 ];
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        padding: '10px',
-        textAlign: 'left'
-    },
-    table: {
-        width: '100%',
-        marginTop: '50px'
-    },
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
     dialogstyle: {
         alignSelf: 'center',
     },
@@ -60,21 +60,21 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center'
     },
     butPrint: {
-      marginTop: '10px',
-      width: '200px',
-      alignContent: 'right',
-      marginLeft: '10px'
+        marginTop: '10px',
+        width: '200px',
+        alignContent: 'right',
+        marginLeft: '10px'
     },
     margin: {
-      width: '300px'
+        width: '300px'
     },
-}));
+});
 
 const URL = 'https://envios-api-service.herokuapp.com/api/clientes';
 
-const TableClients = (className, ...rest) => {
-    const classes = useStyles();
-    const [employees, setEmployees] = useState([]);
+export default function BasicTable() {
+  const classes = useStyles();
+  const [employees, setEmployees] = useState([]);
 
     useEffect(() => {
         getData()
@@ -94,6 +94,23 @@ const TableClients = (className, ...rest) => {
         console.log(cliente);
     };
 
+    const handleChangeCliente = (event) => {
+        cliente[event.target.id] = event.target.value;
+        setCliente(cliente);
+      };
+
+    const handleChangeBD = async() => {
+        var prueba = { "cliente": JSON.stringify(cliente) };
+        await fetch("https://envios-api-service.herokuapp.com/api/clientes", {
+        method: 'POST', 
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(prueba)
+        }).then(data=>{
+        });
+    }
+
     const [cliente, setCliente] = React.useState(
         {
             tipoid: '',
@@ -109,24 +126,6 @@ const TableClients = (className, ...rest) => {
             vlrSeguro: ''
         }
     );
-
-    const handleChangeCliente = (event) => {
-        cliente[event.target.id] = event.target.value;
-        setCliente(cliente);
-      };
-
-    const handleChangeBD = async() => {
-        var prueba = { "cliente": JSON.stringify(cliente) };
-        await fetch("https://envios-api-service.herokuapp.com/api/clientes", {
-        method: 'POST', 
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(prueba)
-        }).then(data=>{
-        console.log (cliente);
-        });
-    }
 
     const [open, setOpen] = React.useState(false);
 
@@ -192,13 +191,6 @@ const TableClients = (className, ...rest) => {
         }).then(data=>{
         }); 
       }
-    
-    const renderHeader = () => {
-        let headerElement = ['Identificacion', 'Nombre', 'Pais-Ciudad', 'Telefono', 'Direccion', 'Edicion']
-        return headerElement.map((key, index) => {
-            return <th key={index}>{key}</th>
-        })
-    }
 
     const [openCarga, setOpenCarga] = React.useState(false);
     
@@ -214,58 +206,9 @@ const TableClients = (className, ...rest) => {
     setOpenCarga(false);
     };
 
-    const renderBody = () => {
-        return employees && employees.map(({ 
-            _id,
-            numid, 
-            nombre, 
-            telefono, 
-            pais,
-            ciudad,
-            direccion
-        }) => {
-            return (
-                <tr key={_id}>
-                    <td>{numid}</td>
-                    <td>{nombre}</td>
-                    <td>{`${pais} ${ciudad}`}</td>
-                    <td>{telefono}</td>
-                    <td>{direccion}</td>
-                    <td>
-                        <Button 
-                            color='primary' 
-                            className='button' 
-                            onClick={() => 
-                            {
-                                handleEdit(_id);
-                                handleClickOpenT()
-                            }}
-                        >
-                            Tarifa
-                        </Button>
-                        <Button 
-                            color='primary' 
-                            className='button' 
-                            onClick={() => 
-                            {
-                                handleEdit(_id);
-                                handleClickOpenS()
-                            }}
-                        >
-                            Seguro
-                        </Button>
-                    </td>
-                </tr>
-            )
-        })
-    }
-
-    return (
-        <Card 
-            className={clsx(classes.root, className)}
-            {...rest}
-        >
-            <Button 
+  return (
+    <TableContainer component={Paper}>
+        <Button 
             variant="outlined" 
             color="primary"  
             onClick={handleClickOpen} 
@@ -331,16 +274,58 @@ const TableClients = (className, ...rest) => {
                   </Button>
                 </DialogActions>
             </Dialog>
-            <br />
-            <table id='employee' className={classes.table}>
-                <thead>
-                    <tr>{renderHeader()}</tr>
-                </thead>
-                <tbody>
-                    {renderBody()}
-                </tbody>
-            </table>
-            <Dialog
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Identificacion</TableCell>
+            <TableCell>Nombre</TableCell>
+            <TableCell>Pais - Ciudad</TableCell>
+            <TableCell>Telefono</TableCell>
+            <TableCell>Direccion</TableCell>
+            <TableCell>Tarifa</TableCell>
+            <TableCell>Edicion</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {employees.map((row) => (
+            <TableRow key={row.id}>
+              <TableCell component="th" scope="row">
+                {row.numid}
+              </TableCell>
+              <TableCell>{row.nombre}</TableCell>
+              <TableCell>{row.pais} {row.ciudad}</TableCell>
+              <TableCell>{row.telefono}</TableCell>
+              <TableCell>{row.direccion}</TableCell>
+              <TableCell>{row.vlrUnidad}</TableCell>
+              <TableCell>
+                <Button 
+                    color='primary' 
+                    className='button' 
+                    onClick={() => 
+                    {
+                        handleEdit(row._id);
+                        handleClickOpenT()
+                    }}
+                >
+                    Tarifa
+                </Button>
+                <Button 
+                    color='primary' 
+                    className='button' 
+                    onClick={() => 
+                    {
+                        handleEdit(row._id);
+                        handleClickOpenS()
+                    }}
+                >
+                    Seguro
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <Dialog
                 open={openT}
                 onClose={handleCloseT}
                 aria-labelledby="alert-dialog-title"
@@ -358,6 +343,7 @@ const TableClients = (className, ...rest) => {
                     onClick={() => {
                     handleChangeTarBD();
                     handleCloseT();
+                    handleClickCarga();
                     }}
                     type="submit"
                     variant="outlined" 
@@ -414,8 +400,6 @@ const TableClients = (className, ...rest) => {
                 Cliente Editado!
               </Alert>
             </Snackbar>
-        </Card>
-    )
-};
-
-export default TableClients;
+    </TableContainer>
+  );
+}
