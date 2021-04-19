@@ -157,25 +157,38 @@ export default function BasicTable() {
         setOpenS(false);
     };
 
+    const [openD, setOpenD] = React.useState(false);
+
+    const handleClickOpenD = () => {
+        setOpenD(true);
+    };
+
+    const handleCloseD = () => {
+        setOpenD(false);
+    };
+
     const [idUpdate, setId] = React.useState('');
 
     const handleEdit = async (id) => {
         setId(id);
-        console.log(idUpdate);
     }
 
     const [tarNueva, setTar] = React.useState('');
 
     const handleTar = async (event) => {
         setTar(event.target.value);
-        console.log(tarNueva);
     }
 
     const [segNueva, setSeg] = React.useState('');
 
     const handleSeg = async (event) => {
         setSeg(event.target.value);
-        console.log(segNueva);
+    }
+
+    const [dirNueva, setDir] = React.useState('');
+
+    const handleDir = async (event) => {
+        setDir(event.target.value);
     }
 
     const handleChangeTarBD = async() => {
@@ -187,6 +200,13 @@ export default function BasicTable() {
 
     const handleChangeSegBD = async() => {
         await fetch("https://envios-api-service.herokuapp.com/api/clientes/seguro/"+segNueva+'/'+idUpdate, {
+          method: 'POST', 
+        }).then(data=>{
+        }); 
+      }
+
+    const handleChangeDirBD = async() => {
+        await fetch("https://envios-api-service.herokuapp.com/api/clientes/direccion/"+dirNueva+'/'+idUpdate, {
           method: 'POST', 
         }).then(data=>{
         }); 
@@ -277,7 +297,6 @@ export default function BasicTable() {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Identificacion</TableCell>
             <TableCell>Nombre</TableCell>
             <TableCell>Pais - Ciudad</TableCell>
             <TableCell>Telefono</TableCell>
@@ -289,9 +308,6 @@ export default function BasicTable() {
         <TableBody>
           {employees.map((row) => (
             <TableRow key={row.id}>
-              <TableCell component="th" scope="row">
-                {row.numid}
-              </TableCell>
               <TableCell>{row.nombre}</TableCell>
               <TableCell>{row.pais} {row.ciudad}</TableCell>
               <TableCell>{row.telefono}</TableCell>
@@ -309,6 +325,7 @@ export default function BasicTable() {
                 >
                     Tarifa
                 </Button>
+                <br />
                 <Button 
                     color='primary' 
                     className='button' 
@@ -319,6 +336,18 @@ export default function BasicTable() {
                     }}
                 >
                     Seguro
+                </Button>
+                <br />
+                <Button 
+                    color='primary' 
+                    className='button' 
+                    onClick={() => 
+                    {
+                        handleEdit(row._id);
+                        handleClickOpenD()
+                    }}
+                >
+                    Direccion
                 </Button>
               </TableCell>
             </TableRow>
@@ -388,6 +417,41 @@ export default function BasicTable() {
                 </Button>
                 <Button 
                     onClick={handleCloseS} 
+                    variant="outlined" 
+                    color="primary" 
+                >
+                    Cerrar
+                </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openD}
+                onClose={handleCloseD}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                width="200px"
+            >
+                <DialogTitle id="alert-dialog-title" className={classes.dialogstyle}>{"Edicion direccion:"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" className={classes.form}>
+                    <TextField id="seguro" label="Direccion nueva" className={classes.margin} onChange={handleDir} />
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button 
+                    onClick={() => {
+                    handleChangeDirBD();
+                    handleCloseS();
+                    handleClickCarga();
+                    }}
+                    type="submit"
+                    variant="outlined" 
+                    color="primary"
+                >
+                    Cambiar
+                </Button>
+                <Button 
+                    onClick={handleCloseD} 
                     variant="outlined" 
                     color="primary" 
                 >
