@@ -113,7 +113,8 @@ export default function BasicTable() {
             nombreCliente: '',
             whr: '0',
             peso: '',
-            numCaja: ''
+            numCaja: '',
+            comentario: ''
         }
       );
     
@@ -172,10 +173,9 @@ export default function BasicTable() {
             <TableCell>Tracking ID</TableCell>
             <TableCell>Nombre Cliente</TableCell>
             <TableCell>Peso</TableCell>
-            <TableCell>Num. Caja</TableCell>
             <TableCell>WHR</TableCell>
+            <TableCell>Comentario</TableCell>
             <TableCell>Editar</TableCell>
-            <TableCell>Eliminar</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -187,10 +187,10 @@ export default function BasicTable() {
               <TableCell>{row.track_id}</TableCell>
               <TableCell>{row.nombreCliente}</TableCell>
               <TableCell>{row.peso}</TableCell>
-              <TableCell>{row.numCaja}</TableCell>
               <TableCell>{row.whr}</TableCell>
+              <TableCell>{row.comentario}</TableCell>
               <TableCell>
-                <Button 
+                <Button
                     color='primary' 
                     className='button' 
                     onClick={() => 
@@ -200,18 +200,17 @@ export default function BasicTable() {
                 >
                     WHR
                 </Button>
-              </TableCell>
-              <TableCell>
-                <Button 
-                    color='primary' 
-                    className='button' 
-                    onClick={() => 
+                <br />
+                <Button
+                    color='primary'
+                    className='button'
+                    onClick={() =>
                     {handleChangeId(row._id);
                     handleDelete(row._id);
                     handleClickCarga();
                     }}
                 >
-                    Eliminar
+                  Eliminar
                 </Button>
               </TableCell>
             </TableRow>
@@ -219,92 +218,95 @@ export default function BasicTable() {
         </TableBody>
       </Table>
       <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-track"
-                aria-describedby="alert-track"
-                width="200px"
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-track"
+          aria-describedby="alert-track"
+          width="200px"
+      >
+        <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Datos de la entrada nueva:"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-track" className={classes.form}>
+            <TextField
+              id="fecha"
+              label="Fecha - Hora"
+              type="datetime-local"
+              defaultValue={Date.now}
+              onChange={handleChangeTrack}
+              className={classes.margin}
+              InputLabelProps={{
+              shrink: true,
+              }}
+            />
+            <TextField id="track_id" label="Tracking ID" className={classes.margin} onChange={handleChangeTrack} />
+            <TextField id="nombreCliente" label="Nombre Cliente" className={classes.margin} onChange={handleChangeTrack} />
+            <TextField id="peso" label="Peso (Lb)" className={classes.margin} onChange={handleChangeTrack} />
+            <TextField id="numCaja" label="Numero Caja" className={classes.margin} onChange={handleChangeTrack} />
+            <TextField id="comentario" label="Observaciones" className={classes.margin} onChange={handleChangeTrack} />
+          </DialogContentText>
+          </DialogContent>
+            <DialogActions>
+              <Button 
+                onClick={() => {
+                  handleChangeBDTracking();
+                  handleClose();
+                }}
+                type="submit"
+                variant="outlined" 
+                color="primary"
+              >
+                Agregar
+              </Button>
+              <Button 
+                onClick={handleClose} 
+                variant="outlined" 
+                color="primary" 
+              >
+                Cerrar
+              </Button>
+            </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openAdd}
+          onClose={handleCloseAdd}
+          aria-labelledby="alert-track"
+          aria-describedby="alert-track"
+          width="200px"
+        >
+          <DialogTitle id="alert-track" className={classes.dialogstyle}>
+            {"Agregue o Modifique el WHR:"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-track" className={classes.form}>
+              <TextField id="whr" label="WHR" className={classes.margin} onChange={handleChangeWHR} />
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button 
+              onClick={() => {
+                handleChangeWHRBD();
+                handleCloseAdd();
+              }}
+              type="submit"
+              variant="outlined" 
+              color="primary"
             >
-                <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Datos de la entrada nueva:"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-track" className={classes.form}>
-                      <TextField
-                        id="fecha"
-                        label="Fecha - Hora"
-                        type="datetime-local"
-                        defaultValue={Date.now}
-                        onChange={handleChangeTrack}
-                        className={classes.margin}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                      />
-                      <TextField id="track_id" label="Tracking ID" className={classes.margin} onChange={handleChangeTrack} />
-                      <TextField id="nombreCliente" label="Nombre Cliente" className={classes.margin} onChange={handleChangeTrack} />
-                      <TextField id="peso" label="Peso (Lb)" className={classes.margin} onChange={handleChangeTrack} />
-                      <TextField id="numCaja" label="Numero Caja" className={classes.margin} onChange={handleChangeTrack} />
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button 
-                    onClick={() => {
-                      handleChangeBDTracking();
-                      handleClose();
-                    }}
-                    type="submit"
-                    variant="outlined" 
-                    color="primary"
-                  >
-                    Agregar
-                  </Button>
-                  <Button 
-                    onClick={handleClose} 
-                    variant="outlined" 
-                    color="primary" 
-                  >
-                    Cerrar
-                  </Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog
-                open={openAdd}
-                onClose={handleCloseAdd}
-                aria-labelledby="alert-track"
-                aria-describedby="alert-track"
-                width="200px"
+              Cambiar
+            </Button>
+            <Button 
+              onClick={handleCloseAdd} 
+              variant="outlined" 
+              color="primary" 
             >
-                <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Agregue o Modifique el WHR:"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-track" className={classes.form}>
-                      <TextField id="whr" label="WHR" className={classes.margin} onChange={handleChangeWHR} />
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button 
-                    onClick={() => {
-                      handleChangeWHRBD();
-                      handleCloseAdd();
-                    }}
-                    type="submit"
-                    variant="outlined" 
-                    color="primary"
-                  >
-                    Cambiar
-                  </Button>
-                  <Button 
-                    onClick={handleCloseAdd} 
-                    variant="outlined" 
-                    color="primary" 
-                  >
-                    Cerrar
-                  </Button>
-                </DialogActions>
-            </Dialog>
-            <Snackbar open={openCarga} autoHideDuration={6000} onClose={handleCloseCarga}>
-              <Alert onClose={handleCloseCarga} severity="success">
-                Entrada Eliminada!
-              </Alert>
-            </Snackbar>
+              Cerrar
+            </Button>
+          </DialogActions>
+          </Dialog>
+          <Snackbar open={openCarga} autoHideDuration={6000} onClose={handleCloseCarga}>
+            <Alert onClose={handleCloseCarga} severity="success">
+              Entrada Eliminada!
+            </Alert>
+          </Snackbar>
     </TableContainer>
   );
 }
