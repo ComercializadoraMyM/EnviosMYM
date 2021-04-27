@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import clsx from 'clsx';
 import jsPDF from 'jspdf';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -231,10 +232,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FormSeccion() {
+  useEffect(() => {
+    getData()
+  }, [])
+
   const classes = useStyles();
   const [values, setValues] = React.useState({
     amount: '',
-  });
+  }); 
 
   const [guia, setGuia] = React.useState(
     {
@@ -385,7 +390,16 @@ export default function FormSeccion() {
     setCliente(event.target.value);
   };
 
+  const [employees, setEmployees] = useState([]);
+  const URL = 'https://envios-api-service.herokuapp.com/api/guias';
+
+  const getData = async () => {
+    const response = await axios.get(URL)
+    setEmployees(response.data)
+  }
+
   const handleChangeBD = async () => {
+    guia.codBar = 'MYM-2021-'+(employees.length+1);
     var prueba = { "guia": JSON.stringify(guia) };
     await fetch("https://envios-api-service.herokuapp.com/api/guias", {
       method: 'POST',
@@ -394,14 +408,18 @@ export default function FormSeccion() {
       },
       body: JSON.stringify(prueba)
     }).then(data => {
-      //idGuia = prueba._id;
-      console.log(guia);
     });
+  }
+
+  const [codID, setCodId] = React.useState('');
+
+  const handleCodID = async (id) => {
+    setCodId(id);
   }
 
   const generatePdf = () => {
     var JsBarcode = require('jsbarcode');
-    JsBarcode("#code128", idGuia, { format: "code128" });
+    JsBarcode("#code128", codID, { format: "code128" });
     const img = document.querySelector('img#code128');
     const logo = new Image();
     logo.src = '/static/images/avatars/guia.png';
@@ -412,7 +430,7 @@ export default function FormSeccion() {
     doc.setFont('verdana', 'normal');
     doc.setFontSize('10');
     doc.text(350, 118, guia.infGuia.fecha);
-    doc.text(350, 95, idGuia.toString());
+    doc.text(350, 95, codID.toString());
     doc.text(70, 221, guia.vlrLiquidacion.peso + ' ' + guia.vlrLiquidacion.undPeso);
     doc.text(370, 221, guia.datosEnvio.descripcion);
     doc.text(360, 158, cliente.nombre);
@@ -421,13 +439,12 @@ export default function FormSeccion() {
     doc.text(360, 189, cliente.ciudad);
     doc.text(360, 200, cliente.direccion);
     img.style.display = 'none';
-    console.log(guia);
     doc.save('guia.pdf');
   };
 
   const generateZebra = () => {
     var JsBarcode = require('jsbarcode');
-    JsBarcode("#code128", idGuia, { format: "code128" });
+    JsBarcode("#code128", codID, { format: "code128" });
     const img = document.querySelector('img#code128');
     const logo = new Image();
     logo.src = '/static/images/avatars/guia-zebra.png';
@@ -438,7 +455,7 @@ export default function FormSeccion() {
     doc.setFont('verdana', 'normal');
     doc.setFontSize('5');
     doc.text(5.9, 1.89, guia.infGuia.fecha);
-    doc.text(1.2, 1.87, idGuia.toString());
+    doc.text(1.2, 1.87, codID.toString());
     doc.text(1.2, 6.04, guia.vlrLiquidacion.peso + ' ' + guia.vlrLiquidacion.undPeso);
     doc.text(1.8, 5.84, guia.datosEnvio.descripcion);
     doc.text(2.2, 4.25, cliente.nombre);
@@ -490,13 +507,6 @@ export default function FormSeccion() {
     }
   }
 
-  const [idGuia, setId] = React.useState('');
-
-  const handleEdit = async () => {
-    setId(guiaBD[guiaBD.length - 1]._id);
-    console.log(idGuia);
-  }
-
   const [openSnack, setOpenSnack] = React.useState(false);
 
   const handleClickSnack = async () => {
@@ -524,8 +534,8 @@ export default function FormSeccion() {
 
   const handleClickCarga = async () => {
     setOpenCarga(true);
-    setId(guiaBD[guiaBD.length - 1]._id);
-    console.log(idGuia);
+    handleCodID(guiaBD[guiaBD.length - 1].codBar);
+    console.log(codID);
   };
 
   const handleCloseCarga = (event, reason) => {
@@ -890,7 +900,6 @@ export default function FormSeccion() {
               variant="outlined"
               color="secondary"
               onClick={() => {
-                handleEdit();
                 handleClickOpenEnvio();
               }}
               className={clsx(classes.margin, classes.butPrint)}

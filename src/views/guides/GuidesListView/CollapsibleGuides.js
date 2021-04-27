@@ -104,9 +104,16 @@ function Row(props) {
     setId(id);
   }
 
+  const [codID, setCodId] = React.useState('');
+
+  const handleCodID = async (bar) => {
+    console.log(bar);
+    setCodId(bar);
+  }
+
   const generatePdf = () => {
     var JsBarcode = require('jsbarcode');
-    JsBarcode("#code128", idUpdate, { format: "code128" });
+    JsBarcode("#code128", codID, { format: "code128" });
     const img = document.querySelector('img#code128');
     const logo = new Image();
     logo.src = '/static/images/avatars/guia.png';
@@ -117,7 +124,7 @@ function Row(props) {
     doc.setFont('verdana', 'normal');
     doc.setFontSize('10');
     doc.text(350, 118, row.infGuia.fecha);
-    doc.text(350, 95, idUpdate.toString());
+    doc.text(350, 95, codID);
     doc.text(70, 221, row.vlrLiquidacion.peso + ' ' + row.vlrLiquidacion.undPeso);
     doc.text(370, 221, row.datosEnvio.descripcion);
     doc.text(360, 158, row.destinatario.nombre);
@@ -131,7 +138,7 @@ function Row(props) {
 
   const generateZebra = () => {
     var JsBarcode = require('jsbarcode');
-    JsBarcode("#code128", idUpdate, { format: "code128" });
+    JsBarcode("#code128", codID, { format: "code128" });
     const img = document.querySelector('img#code128');
     const logo = new Image();
     logo.src = '/static/images/avatars/guia-zebra.png';
@@ -142,7 +149,7 @@ function Row(props) {
     doc.setFont('verdana', 'normal');
     doc.setFontSize('5');
     doc.text(5.9, 1.89, row.infGuia.fecha);
-    doc.text(1.2, 1.87, idUpdate.toString());
+    doc.text(1.2, 1.87, codID.toString());
     doc.text(1.2, 6.04, row.vlrLiquidacion.peso + ' ' + row.vlrLiquidacion.undPeso);
     doc.text(1.8, 5.84, row.datosEnvio.descripcion);
     doc.text(2.2, 4.25, row.destinatario.nombre);
@@ -193,7 +200,7 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row._id}
+          {row.codBar}
         </TableCell>
         <TableCell >{moment(row.infGuia.fecha).format('DD/MM/YYYY')}</TableCell>
         <TableCell >{row.destinatario.nombre}</TableCell>
@@ -289,10 +296,10 @@ function Row(props) {
                       </Button>
                 </DialogActions>
               </Dialog>
-              <Button color="primary" onClick={()=>{handleEdit(row._id);generatePdf()}} className={classes.butPrint}>
+              <Button color="primary" onClick={()=>{handleCodID(row.codBar);generatePdf()}} className={classes.butPrint}>
                 Impresora Papel
               </Button>
-              <Button color="primary" onClick={()=>{handleEdit(row._id);generateZebra()}} className={classes.butPrint}>
+              <Button color="primary" onClick={()=>{handleCodID(row.codBar);generateZebra()}} className={classes.butPrint}>
                 Impresora Zebra
               </Button>
             </Box>
