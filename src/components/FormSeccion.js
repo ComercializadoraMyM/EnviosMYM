@@ -399,7 +399,7 @@ export default function FormSeccion() {
   }
 
   const handleChangeBD = async () => {
-    guia.codBar = 'MYM-2021-'+(employees.length+1);
+    guia.codBar = 'MYM-2021-'+(employees.length+2);
     var prueba = { "guia": JSON.stringify(guia) };
     await fetch("https://envios-api-service.herokuapp.com/api/guias", {
       method: 'POST',
