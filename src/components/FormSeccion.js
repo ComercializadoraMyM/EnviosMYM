@@ -391,15 +391,19 @@ export default function FormSeccion() {
   };
 
   const [employees, setEmployees] = useState([]);
+
   const URL = 'https://envios-api-service.herokuapp.com/api/guias';
 
   const getData = async () => {
-    const response = await axios.get(URL)
-    setEmployees(response.data)
+    const response = await axios.get(URL);
+    setEmployees(response.data);
   }
 
   const handleChangeBD = async () => {
-    guia.codBar = 'MYM-2021-'+(employees.length+2);
+    console.log(employees+"---------1");
+    guia.codBar = 'MYM-2021-'+(employees.length+1);
+    handleCodID(guia.codBar);
+    console.log(codID);
     var prueba = { "guia": JSON.stringify(guia) };
     await fetch("https://envios-api-service.herokuapp.com/api/guias", {
       method: 'POST',
@@ -477,8 +481,6 @@ export default function FormSeccion() {
     setOpen(false);
   };
 
-  const [guiaBD, setGuiaBD] = React.useState([]);
-
   const [openEnvio, setOpenEnvio] = React.useState(false);
 
   const handleClickOpenEnvio = async () => {
@@ -511,30 +513,20 @@ export default function FormSeccion() {
 
   const handleClickSnack = async () => {
     setOpenSnack(true);
-    await fetch('https://envios-api-service.herokuapp.com/api/guias')
-      .then(function (response) {
-        return response.json();
-      }).then(data => {
-        setGuiaBD(data);
-      })
-      .catch(function (err) {
-        console.error(err);
-      });
   };
 
   const handleCloseSnack = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-
     setOpenSnack(false);
   };
 
   const [openCarga, setOpenCarga] = React.useState(false);
 
   const handleClickCarga = async () => {
+    getData();
     setOpenCarga(true);
-    handleCodID(guiaBD[guiaBD.length - 1].codBar);
     console.log(codID);
   };
 
