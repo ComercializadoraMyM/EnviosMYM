@@ -30,8 +30,7 @@ const CustomerListView = () => {
       title="Guides lista"
     >
       <Container maxWidth={false}>
-        <h2 className={classes.tit}>Lista de las Guias</h2>
-        <Toolbar />
+        <Toolbar /> 
         <Box mt={3}>
           <CollapsibleGuides />
         </Box>

@@ -126,7 +126,7 @@ export default function BasicTable() {
       const [whrUpdate, setWhr] = React.useState('');
 
       const handleChangeWHR = (event) => {
-        setWhr (event.target.value);
+        setWhr ('BOG '+event.target.value);
       }
 
       const [idUpdate, setId] = React.useState('');
@@ -173,7 +173,7 @@ export default function BasicTable() {
             <TableCell>Tracking ID</TableCell>
             <TableCell>Nombre Cliente</TableCell>
             <TableCell>Peso</TableCell>
-            <TableCell>WHR</TableCell>
+            <TableCell>Estado</TableCell>
             <TableCell>Comentario</TableCell>
             <TableCell>Editar</TableCell>
           </TableRow>
@@ -195,10 +195,10 @@ export default function BasicTable() {
                     className='button' 
                     onClick={() => 
                     {handleChangeId(row._id);
-                    handleClickOpenAdd()
+                      handleClickOpenAdd()
                     }}
                 >
-                    WHR
+                    Estado
                 </Button>
                 <br />
                 <Button
@@ -278,7 +278,16 @@ export default function BasicTable() {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-track" className={classes.form}>
-              <TextField id="whr" label="WHR" className={classes.margin} onChange={handleChangeWHR} />
+              <TextField 
+                id="whr"
+                label="WHR"
+                type="datetime-local"
+                defaultValue={Date.now}
+                onChange={handleChangeWHR}
+                className={classes.margin}
+                InputLabelProps={{
+                  shrink: true,
+                }}/>
             </DialogContentText>
           </DialogContent>
           <DialogActions>

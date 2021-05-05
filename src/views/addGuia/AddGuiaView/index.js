@@ -29,7 +29,6 @@ const ProductList = () => {
       title="Crear Guia"
     >
       <Container maxWidth={false}>
-        <h1 className={classes.letter}> Crear nueva guia </h1>
         <FormSeccion />
       </Container>
     </Page>

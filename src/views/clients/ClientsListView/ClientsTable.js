@@ -298,6 +298,7 @@ export default function BasicTable() {
         <TableHead>
           <TableRow>
             <TableCell>Nombre</TableCell>
+            <TableCell>Correo</TableCell>
             <TableCell>Pais - Ciudad</TableCell>
             <TableCell>Telefono</TableCell>
             <TableCell>Direccion</TableCell>
@@ -309,6 +310,7 @@ export default function BasicTable() {
           {employees.map((row) => (
             <TableRow key={row.id}>
               <TableCell>{row.nombre}</TableCell>
+              <TableCell>{row.email}</TableCell>
               <TableCell>{row.pais} {row.ciudad}</TableCell>
               <TableCell>{row.telefono}</TableCell>
               <TableCell>{row.direccion}</TableCell>

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { logout } from '../../../utils';
 import {
   Avatar,
   Box,
@@ -15,7 +16,8 @@ import {
   Edit,
   BookOpen,
   Users,
-  Package
+  Package,
+  LogOut,
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -43,6 +45,12 @@ const items = [
     href: '/app/tracking-view',
     icon: Package,
     title: 'Entradas'
+  },
+  {
+    href: '/',
+    onclick: logout(),
+    icon: LogOut,
+    title: 'Cerrar Sesion'
   }
 ];
 

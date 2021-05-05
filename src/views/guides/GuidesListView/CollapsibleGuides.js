@@ -92,10 +92,26 @@ function Row(props) {
     setOpenAdd(false);
   };
 
+  const [openAddWHR, setOpenAddWHR] = React.useState(false);
+
+  const handleClickOpenAddWHR = () => {
+    setOpenAddWHR(true);
+  };
+
+  const handleCloseAddWHR = () => {
+    setOpenAddWHR(false);
+  };
+
   const [statusUpdate, setStatus] = React.useState('');
 
   const handleChangeStatus = (event) => {
     setStatus(event.target.value);
+  }
+
+  const [whrUpdate, setwhr] = React.useState('');
+
+  const handleChangewhr = (event) => {
+    setwhr(event.target.value);
   }
 
   const [idUpdate, setId] = React.useState('');
@@ -107,7 +123,6 @@ function Row(props) {
   const [codID, setCodId] = React.useState('');
 
   const handleCodID = async (bar) => {
-    console.log(bar);
     setCodId(bar);
   }
 
@@ -165,7 +180,13 @@ function Row(props) {
     await fetch("https://envios-api-service.herokuapp.com/api/guias/" + statusUpdate + '/' + idUpdate, {
       method: 'POST',
     }).then(data => {
-      console.log();
+    });
+  }
+
+  const handleChangewhrBD = async () => {
+    await fetch("https://envios-api-service.herokuapp.com/api/guias/whr/" + whrUpdate + '/' + idUpdate, {
+      method: 'POST',
+    }).then(data => {
     });
   }
 
@@ -173,7 +194,6 @@ function Row(props) {
     await fetch("https://envios-api-service.herokuapp.com/api/guias/" + idUp, {
       method: 'DELETE',
     }).then(data => {
-      console.log();
     });
   }
 
@@ -204,6 +224,7 @@ function Row(props) {
         </TableCell>
         <TableCell >{moment(row.infGuia.fecha).format('DD/MM/YYYY')}</TableCell>
         <TableCell >{row.destinatario.nombre}</TableCell>
+        <TableCell >{row.whr}</TableCell>
         <TableCell >{row.vlrLiquidacion.peso}</TableCell>
         <TableCell >{row.status}</TableCell>
         <TableCell >
@@ -226,7 +247,7 @@ function Row(props) {
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <div className={classes.typography}>
@@ -243,10 +264,61 @@ function Row(props) {
                 color="secondary"
                 onClick={() => {
                   handleEdit(row._id);
+                  handleClickOpenAddWHR();
+                }}
+              >
+                WHR
+              </Button>
+              <Dialog
+                open={openAddWHR}
+                onClose={handleCloseAddWHR}
+                aria-labelledby="alert-track"
+                aria-describedby="alert-track"
+                width="200px"
+              >
+                <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Agregue WHR:"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-track" className={classes.form}>
+                    <form>
+                      <TextField
+                        id="nomb"
+                        name="infGuia"
+                        className={classes.margin}
+                        onChange={handleChangewhr}
+                      >
+                      </TextField>
+                    </form>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={() => {
+                      handleChangewhrBD();
+                      handleCloseAddWHR();
+                    }}
+                    type="submit"
+                    variant="outlined"
+                    color="primary"
+                  >
+                    Cambiar
+                      </Button>
+                  <Button
+                    onClick={handleCloseAddWHR}
+                    variant="outlined"
+                    color="primary"
+                  >
+                    Cerrar
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              <Button
+                color="secondary"
+                onClick={() => {
+                  handleEdit(row._id);
                   handleClickOpenAdd();
                 }}
               >
-                Editar
+                ESTADO
               </Button>
               <Dialog
                 open={openAdd}
@@ -333,6 +405,7 @@ export default function CollapsibleGuides(props) {
             <TableCell>Id</TableCell>
             <TableCell>Fecha</TableCell>
             <TableCell>Nombre</TableCell>
+            <TableCell>WHR</TableCell>
             <TableCell>Peso</TableCell>
             <TableCell>Estado</TableCell>
             <TableCell>Editar</TableCell>

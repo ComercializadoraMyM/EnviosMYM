@@ -117,8 +117,8 @@ const nombreGuia = [
     label: 'Fernando Mejia',
   },
   {
-    value: 'Eddyt Vera',
-    label: 'Eddyt Vera',
+    value: 'Eddy Vera',
+    label: 'Eddy Vera',
   },
   {
     value: 'Alejandra Mejia',
@@ -278,6 +278,7 @@ export default function FormSeccion() {
         tipEnvioNal: ''
       },
       status: 'Guia Creada',
+      whr: '0',
       calculos: {
         flete: '',
         impuesto: '',

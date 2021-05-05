@@ -11,6 +11,7 @@ import {
     FormControl,
     Button
 } from '@material-ui/core/';
+import { login, isLogin } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -64,15 +65,17 @@ export default function LoginForm(props) {
     const handleChangeLog = (event) => {
         logIn[event.target.name][event.target.id] = event.target.value;
         setLogIn(logIn);
+        console.log(logIn);
     };
 
-    const handleChangeLogIn = () => {
-        if (logIn.validation.nombre === "Envios" && logIn.validation.password === "MYM2021"){
-            window.location='/app/account';
+    const handleChangeLogIn = async () => {
+        await login(logIn.validation.nombre, logIn.validation.password);
+        if (isLogin()) {
+            window.location = "/app/account";
         } else {
             window.location='/';
         }
-    };
+    }
 
 const classes = useStyles();
   
@@ -107,9 +110,6 @@ return (
                             <VpnKeySharpIcon/>
                             </InputAdornment>
                         }/>
-                        <h4 className={classes.letter} >
-                            Datos incorrectos.
-                        </h4>
                 </FormControl>
                 <div>
                    <Button 

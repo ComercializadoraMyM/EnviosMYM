@@ -72,11 +72,11 @@ const Toolbar = ({ className, ...rest }) => {
     },
   ];
 
-  const [idIn, setIdIn] = React.useState (
+  const [idIn, setIdIn] = React.useState(
     {
-        id: {
-            in: '',
-        }
+      id: {
+        in: '',
+      }
     }
   );
 
@@ -97,10 +97,10 @@ const Toolbar = ({ className, ...rest }) => {
 
   const getDataSpecific = async (id) => {
     const response = await axios.get(`${URL}/${id}`)
-    if (response.data.length > 0){
+    if (response.data.length > 0) {
       setGuias(response.data[0])
     } else {
-      setGuias({"calculos": {}, "destinatario": {}});
+      setGuias({ "calculos": {}, "destinatario": {} });
     }
   }
 
@@ -114,10 +114,26 @@ const Toolbar = ({ className, ...rest }) => {
     setOpenAdd(false);
   };
 
+  const [openAddWHR, setOpenAddWHR] = React.useState(false);
+
+  const handleClickOpenAddWHR = () => {
+    setOpenAddWHR(true);
+  };
+
+  const handleCloseAddWHR = () => {
+    setOpenAddWHR(false);
+  };
+
   const [statusUpdate, setStatus] = React.useState('');
 
   const handleChangeStatus = (event) => {
     setStatus(event.target.value);
+  }
+
+  const [whrUpdate, setwhr] = React.useState('');
+
+  const handleChangewhr = (event) => {
+    setwhr(event.target.value);
   }
 
   const handleChangeStatusBD = async () => {
@@ -125,6 +141,13 @@ const Toolbar = ({ className, ...rest }) => {
       method: 'POST',
     }).then(data => {
       console.log();
+    });
+  }
+
+  const handleChangewhrBD = async () => {
+    await fetch("https://envios-api-service.herokuapp.com/api/guias/whr/" + whrUpdate + '/' + idUpdate, {
+      method: 'POST',
+    }).then(data => {
     });
   }
 
@@ -163,9 +186,9 @@ const Toolbar = ({ className, ...rest }) => {
                 placeholder="Buscar guia"
                 variant="outlined"
               />
-              <Button 
-                variant="outlined" 
-                color="secondary" 
+              <Button
+                variant="outlined"
+                color="secondary"
                 className={classes.butStyle}
                 onClick={() => {
                   handleClickOpen()
@@ -174,105 +197,157 @@ const Toolbar = ({ className, ...rest }) => {
               >
                 Buscar Guia
               </Button>
-            <Dialog
+              <Dialog
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="alert-track"
                 aria-describedby="alert-track"
                 width="200px"
-            >
+              >
                 <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Detalle de la guia"}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-track" className={classes.form}>
-                      Id: {guias._id}
-                      <br />
+                  <DialogContentText id="alert-track" className={classes.form}>
+                    Id: {guias._id}
+                    <br />
                       Fecha Creacion: {guias.infGuia.fecha}
-                      <br />
-                      Nombre Destinatario: {guias.destinatario.nombre} 
-                      <br />
-                      Peso: {guias.vlrLiquidacion.peso} {guias.vlrLiquidacion.undPeso} 
-                      <br />
+                    <br />
+                      Nombre Destinatario: {guias.destinatario.nombre}
+                    <br />
+                      Peso: {guias.vlrLiquidacion.peso} {guias.vlrLiquidacion.undPeso}
+                    <br />
                       Contenido: {guias.datosEnvio.descripcion}
-                      <br />
-                      Estado: {guias.status} 
-                      <br />
+                    <br />
+                      Estado: {guias.status}
+                    <br />
                       Valor declarado: {guias.vlrLiquidacion.vlrDeclarado}
-                      <br />
+                    <br />
                       Flete: {guias.calculos.flete}
-                      <br />
+                    <br />
                       Seguro: {guias.destinatario.vlrSeguro}
-                      <br />
+                    <br />
                       Impuestos: {guias.calculos.impuesto}
-                      <br />
+                    <br />
                       Total: {guias.calculos.total}
-                    </DialogContentText>
+                  </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                <Button
-                  color="secondary"
-                  variant="outlined"
-                  onClick={() => {
-                    handleEdit(guias._id);
-                    handleClickOpenAdd();
-                  }}
-                >
-                  Editar
-                  </Button>
-                <Dialog
-                  open={openAdd}
-                  onClose={handleCloseAdd}
-                  aria-labelledby="alert-track"
-                  aria-describedby="alert-track"
-                  width="200px"
-                >
-                  <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Modifique el Estado:"}</DialogTitle>
-                  <DialogContent>
-                    <DialogContentText id="alert-track" className={classes.form}>
-                      <TextField
-                        id="nomb"
-                        name="infGuia"
-                        select
-                        className={classes.margin}
-                        onChange={handleChangeStatus}
+                  <Button
+                    color="secondary"
+                    variant="outlined"
+                    onClick={() => {
+                      handleEdit(guias._id);
+                      handleClickOpenAddWHR();
+                    }}
+                  >
+                    WHR
+              </Button>
+                  <Dialog
+                    open={openAddWHR}
+                    onClose={handleCloseAddWHR}
+                    aria-labelledby="alert-track"
+                    aria-describedby="alert-track"
+                    width="200px"
+                  >
+                    <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Agregue WHR:"}</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id="alert-track" className={classes.form}>
+                        <form>
+                          <TextField
+                            id="nomb"
+                            name="infGuia"
+                            className={classes.margin}
+                            onChange={handleChangewhr}
+                          >
+                          </TextField>
+                        </form>
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button
+                        onClick={() => {
+                          handleChangewhrBD();
+                          handleCloseAddWHR();
+                        }}
+                        type="submit"
+                        variant="outlined"
+                        color="primary"
                       >
-                        {nombreGuia.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button
-                      onClick={() => {
-                        handleChangeStatusBD();
-                        handleCloseAdd();
-                      }}
-                      type="submit"
-                      variant="outlined"
-                      color="primary"
-                    >
-                      Cambiar
+                        Cambiar
+                      </Button>
+                      <Button
+                        onClick={handleCloseAddWHR}
+                        variant="outlined"
+                        color="primary"
+                      >
+                        Cerrar
+                  </Button>
+                    </DialogActions>
+                  </Dialog>
+                  <Button
+                    color="secondary"
+                    variant="outlined"
+                    onClick={() => {
+                      handleEdit(guias._id);
+                      handleClickOpenAdd();
+                    }}
+                  >
+                    Estado
+                  </Button>
+                  <Dialog
+                    open={openAdd}
+                    onClose={handleCloseAdd}
+                    aria-labelledby="alert-track"
+                    aria-describedby="alert-track"
+                    width="200px"
+                  >
+                    <DialogTitle id="alert-track" className={classes.dialogstyle}>{"Modifique el Estado:"}</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id="alert-track" className={classes.form}>
+                        <TextField
+                          id="nomb"
+                          name="infGuia"
+                          select
+                          className={classes.margin}
+                          onChange={handleChangeStatus}
+                        >
+                          {nombreGuia.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button
+                        onClick={() => {
+                          handleChangeStatusBD();
+                          handleCloseAdd();
+                        }}
+                        type="submit"
+                        variant="outlined"
+                        color="primary"
+                      >
+                        Cambiar
                         </Button>
-                    <Button
-                      onClick={handleCloseAdd}
-                      variant="outlined"
-                      color="primary"
-                    >
-                      Cerrar
+                      <Button
+                        onClick={handleCloseAdd}
+                        variant="outlined"
+                        color="primary"
+                      >
+                        Cerrar
                         </Button>
-                  </DialogActions>
-                </Dialog>
-                  <Button 
-                    onClick={handleClose} 
-                    variant="outlined" 
-                    color="primary" 
+                    </DialogActions>
+                  </Dialog>
+                  <Button
+                    onClick={handleClose}
+                    variant="outlined"
+                    color="primary"
                   >
                     Cerrar
                   </Button>
                 </DialogActions>
-            </Dialog>
+              </Dialog>
             </Box>
           </CardContent>
         </Card>
