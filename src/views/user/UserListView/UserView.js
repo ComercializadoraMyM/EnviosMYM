@@ -109,11 +109,11 @@ export default function UserView() {
         </TableHead>
         <TableBody>
             {tracks.reverse().map((row) => (
-                <TableRow key={row.id}>
-                <TableCell>{row.codBar}</TableCell>
-                <TableCell>{moment(row.infGuia.fecha).format('DD/MM/YYYY')}</TableCell>
-                <TableCell>{row.vlrLiquidacion.peso}</TableCell>
-                <TableCell>{row.status}</TableCell>
+              <TableRow key={row.id}>
+                <TableCell>{row.track_id}</TableCell>
+                <TableCell>{moment(row.fecha).format('DD/MM/YYYY')}</TableCell>
+                <TableCell>{row.peso}</TableCell>
+                <TableCell>{row.whr}</TableCell>
                 </TableRow>
             ))}          
         </TableBody>
