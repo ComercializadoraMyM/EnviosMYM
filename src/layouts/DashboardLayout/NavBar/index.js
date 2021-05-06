@@ -48,7 +48,7 @@ const items = [
   },
   {
     href: '/',
-    onclick: logout(),
+    onclick: logout,
     icon: LogOut,
     title: 'Cerrar Sesion'
   }
@@ -122,6 +122,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
               key={item.title}
               title={item.title}
               icon={item.icon}
+              onClick={item.onclick}
             />
           ))}
         </List>

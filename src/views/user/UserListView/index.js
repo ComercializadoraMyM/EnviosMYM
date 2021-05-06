@@ -1,10 +1,11 @@
 import React, {useEffect} from 'react';
-import Page from 'src/components/Page';
-import FormSeccion from 'src/components/FormSeccion';
 import {
+  Box,
   Container,
   makeStyles
 } from '@material-ui/core';
+import Page from 'src/components/Page';
+import TableClients from './UserView';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,15 +13,10 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100%',
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3)
-  },
-  letter: {
-    fontFamily: 'arial',
-    fontSize: '10',
-    margin: '20px'
   }
 }));
 
-const ProductList = () => {
+const CustomerListView = () => {
   const classes = useStyles();
 
   useEffect(() => {
@@ -28,17 +24,20 @@ const ProductList = () => {
       window.location.replace("/app/user-view")
     }
   }, []);
-  
+
   return (
     <Page
       className={classes.root}
-      title="Crear Guia"
+      title={localStorage.getItem("user")}
     >
       <Container maxWidth={false}>
-        <FormSeccion />
+        <Box mt={3}>
+          <TableClients/>
+        </Box>
       </Container>
     </Page>
   );
 };
 
-export default ProductList;
+export default CustomerListView;
+ 

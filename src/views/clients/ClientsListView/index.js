@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Box,
   Container,
@@ -18,6 +18,12 @@ const useStyles = makeStyles((theme) => ({
 
 const CustomerListView = () => {
   const classes = useStyles();
+
+  useEffect(() => {
+    if (localStorage.getItem("type") !== "admin") {
+      window.location.replace("/app/user-view")
+    }
+  }, []);
 
   return (
     <Page

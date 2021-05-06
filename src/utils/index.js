@@ -12,28 +12,23 @@ export const login = async (email, password) => {
     const hashArray = Array.from(new Uint8Array(pasw));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-    var cliente = {
-        "correo": email,
-        "psw": hashHex.toString()
-    }
-
     await axios({
         method: 'get',
         contentType: "application/json",
-        url: 'https://envios-api-service.herokuapp.com/api/usuarios/'+loginUser.usuario+'/'+loginUser.contrasena,
+        url: 'https://envios-api-service.herokuapp.com/api/usuarios/'+email+'/'+hashHex.toString(),
     }).then((response) => {
         loginUser = response.data;
-        if (loginUser) {
-            localStorage.setItem("userID", loginUser.id);
-            localStorage.setItem(TOKEN_KEY, loginUser.nombre);
-            localStorage.setItem("type", loginUser.tipo);
+        if (loginUser.length > 0) {
+            localStorage.setItem(TOKEN_KEY, loginUser[0].nombre);
+            localStorage.setItem("_id", loginUser[0]._id);
+            localStorage.setItem("type", loginUser[0].tipo);
         }
     });
 }
 
 export const logout = () => {
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem("userID");
+    localStorage.removeItem("_id");
     localStorage.removeItem("type");
 }
 

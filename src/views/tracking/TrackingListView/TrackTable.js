@@ -18,7 +18,8 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow,
+    MenuItem
 } from '@material-ui/core';
 
 function Alert(props) {
@@ -58,9 +59,10 @@ export default function BasicTable() {
 
   const [employees, setEmployees] = useState([]);
 
-    useEffect(() => {
-        getData()
-    }, [])
+  useEffect(() => {
+    getData();
+    handleChangeListaClientes()
+}, [])
 
     const getData = async () => {
         const response = await axios.get(URL)
@@ -121,6 +123,12 @@ export default function BasicTable() {
       const handleChangeTrack = (event) => {
         trackings[event.target.id] = event.target.value;
         setTrackings(trackings);
+        console.log(trackings);
+      };
+
+      const handleChangeCliente = async (event) => {
+        trackings[event.target.name] = event.target.value.nombre;
+        setTrackings(trackings);
       };
 
       const [whrUpdate, setWhr] = React.useState('');
@@ -155,6 +163,20 @@ export default function BasicTable() {
     
         setOpenCarga(false);
       };
+
+      const [clientes, setNombCliente] = React.useState([]);
+
+      const handleChangeListaClientes = async () => {
+        await fetch('https://envios-api-service.herokuapp.com/api/clientes')
+          .then(function (response) {
+            return response.json();
+          }).then(data => {
+            setNombCliente(data);
+          })
+          .catch(function (err) {
+            console.error(err);
+          });
+      }
 
   return (
     <TableContainer component={Paper}>
@@ -238,8 +260,21 @@ export default function BasicTable() {
               shrink: true,
               }}
             />
-            <TextField id="track_id" label="Tracking ID" className={classes.margin} onChange={handleChangeTrack} />
-            <TextField id="nombreCliente" label="Nombre Cliente" className={classes.margin} onChange={handleChangeTrack} />
+            <TextField id="track_id" label="Tracking ID" className={classes.margin} onChange={handleChangeTrack} />        
+            <TextField
+                name="nombreCliente"
+                className={classes.margin}
+                select
+                label="Seleccione el Cliente"
+                onChange={handleChangeCliente}
+            >
+                {clientes.map((option) => (
+                  <MenuItem key={option.nombre} value={option}>
+                    {option.nombre}
+                  </MenuItem>
+                ))}
+              </TextField>
+
             <TextField id="peso" label="Peso (Lb)" className={classes.margin} onChange={handleChangeTrack} />
             <TextField id="numCaja" label="Numero Caja" className={classes.margin} onChange={handleChangeTrack} />
             <TextField id="comentario" label="Observaciones" className={classes.margin} onChange={handleChangeTrack} />
