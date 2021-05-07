@@ -233,7 +233,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormSeccion() {
   useEffect(() => {
-    getData()
+    getData();
+    handleChangeListaClientes();
   }, [])
 
   const classes = useStyles();
@@ -401,10 +402,8 @@ export default function FormSeccion() {
   }
 
   const handleChangeBD = async () => {
-    console.log(employees+"---------1");
     guia.codBar = 'MYM-2021-'+(employees.length+1);
     handleCodID(guia.codBar);
-    console.log(codID);
     var prueba = { "guia": JSON.stringify(guia) };
     await fetch("https://envios-api-service.herokuapp.com/api/guias", {
       method: 'POST',
@@ -554,7 +553,6 @@ export default function FormSeccion() {
                 label="Nombre"
                 value={nomGuia}
                 onChange={handleChangeNomGuia}
-                onClick={handleChangeListaClientes}
               >
                 {nombreGuia.map((option) => (
                   <MenuItem key={option.value} value={option.value}>

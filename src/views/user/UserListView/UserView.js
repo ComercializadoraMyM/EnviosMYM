@@ -68,56 +68,72 @@ export default function UserView() {
     }
 
   return (
-    <TableContainer component={Paper} className={classes.paper}>
-        <h2 className={classes.tittle} >
-            Bienvenido {localStorage.getItem("user")}
-        </h2>
-        <h3 className={classes.sutittle}>
-            Guias: {employees.length}
-        </h3>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Id Guia</TableCell>
-            <TableCell>Fecha Creacion</TableCell>
-            <TableCell>Peso</TableCell>
-            <TableCell>Estado</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {employees.reverse().map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.codBar}</TableCell>
-              <TableCell>{moment(row.infGuia.fecha).format('DD/MM/YYYY')}</TableCell>
-              <TableCell>{row.vlrLiquidacion.peso}</TableCell>
-              <TableCell>{row.status}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-        <h3 className={classes.sutittle}>
-            Trackings: {tracks.length}
-        </h3>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Id Guia</TableCell>
-            <TableCell>Fecha Creacion</TableCell>
-            <TableCell>Peso</TableCell>
-            <TableCell>Estado</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-            {tracks.reverse().map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{row.track_id}</TableCell>
-                <TableCell>{moment(row.fecha).format('DD/MM/YYYY')}</TableCell>
-                <TableCell>{row.peso}</TableCell>
-                <TableCell>{row.whr}</TableCell>
+    <div>
+      <TableContainer component={Paper} className={classes.paper}>
+          <h2 className={classes.tittle} >
+              Bienvenido {localStorage.getItem("user")}
+          </h2>
+          <h3 className={classes.sutittle}>
+              Guias: {employees.length}
+          </h3>
+          {employees.length !== 0 && 
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Id Guia</TableCell>
+                <TableCell>Fecha Creacion</TableCell>
+                <TableCell>Peso</TableCell>
+                <TableCell>Estado</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {employees.reverse().map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell>{row.codBar}</TableCell>
+                  <TableCell>{moment(row.infGuia.fecha).format('DD/MM/YYYY')}</TableCell>
+                  <TableCell>{row.vlrLiquidacion.peso}</TableCell>
+                  <TableCell>{row.status}</TableCell>
                 </TableRow>
-            ))}          
-        </TableBody>
-      </Table>
-    </TableContainer>
+              ))}
+            </TableBody>
+          </Table>
+          }
+          {employees.length === 0 && 
+            <div>
+              <h4 className={classes.sutittle}>Aún no tiene guias</h4>
+            </div> 
+          }
+            <h3 className={classes.sutittle}>
+                Trackings: {tracks.length}
+            </h3>
+          {tracks.length !== 0 && 
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Id Guia</TableCell>
+                <TableCell>Fecha Creacion</TableCell>
+                <TableCell>Peso</TableCell>
+                <TableCell>Estado</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+                {tracks.reverse().map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell>{row.track_id}</TableCell>
+                    <TableCell>{moment(row.fecha).format('DD/MM/YYYY')}</TableCell>
+                    <TableCell>{row.peso}</TableCell>
+                    <TableCell>{row.whr}</TableCell>
+                    </TableRow>
+                ))}          
+            </TableBody>
+          </Table>
+          }
+          {tracks.length === 0 && 
+            <div>
+              <h4 className={classes.sutittle}>Aún no tienes trackings</h4>
+            </div> 
+          }
+        </TableContainer>
+    </div>
     );
 }
