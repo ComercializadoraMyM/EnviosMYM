@@ -18,8 +18,10 @@ export const login = async (email, password) => {
         url: 'https://envios-api-service.herokuapp.com/api/usuarios/'+email+'/'+hashHex.toString(),
     }).then((response) => {
         loginUser = response.data;
+        console.log(loginUser[0]);
         if (loginUser.length > 0) {
             localStorage.setItem(TOKEN_KEY, loginUser[0].nombre);
+            localStorage.setItem('nombre', loginUser[0].usuario);
             localStorage.setItem("_id", loginUser[0]._id);
             localStorage.setItem("type", loginUser[0].tipo);
         }
@@ -30,6 +32,7 @@ export const logout = () => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem("_id");
     localStorage.removeItem("type");
+    localStorage.removeItem("nombre");
 }
 
 export const isLogin = () => {

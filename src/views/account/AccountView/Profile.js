@@ -13,8 +13,8 @@ import {
 
 const user = {
   avatar: '/static/images/avatars/logo.png',
-  city: 'Colombia - Estados Unidos',
-  name: 'MYM Express',
+  name: localStorage.getItem("user"),
+  usuario: 'Su numero de casillero es: ' + localStorage.getItem("nombre")
 };
 
 const useStyles = makeStyles(() => ({
@@ -32,6 +32,7 @@ const Profile = ({ className, ...rest }) => {
   const classes = useStyles();
 
   return (
+    
     <Card
       className={clsx(classes.root, className)}
       {...rest}
@@ -57,7 +58,7 @@ const Profile = ({ className, ...rest }) => {
             color="textSecondary"
             variant="body1"
           >
-            {`${user.city}`}
+            {`${user.usuario}`}
           </Typography>
         </Box>
       </CardContent>
