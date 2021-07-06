@@ -251,6 +251,7 @@ function Row(props) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <div className={classes.typography}>
+                <p>Trackings enviados: {row.datosEnvio.tracks}</p>
                 <p>Tipo de pago: {row.vlrLiquidacion.tipoPago}</p>
                 <p>Medio de pago: {row.vlrLiquidacion.medioPago} </p>
                 <p>Tipo de envio: {row.vlrLiquidacion.tipoEnvio} </p>

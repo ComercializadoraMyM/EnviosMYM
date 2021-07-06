@@ -264,7 +264,8 @@ export default function FormSeccion() {
         alto: '',
         ancho: '',
         unidad: '',
-        descripcion: ''
+        descripcion: '',
+        tracks: ''
       },
       vlrLiquidacion: {
         undPeso: '',
@@ -291,6 +292,7 @@ export default function FormSeccion() {
   const handleChangeGuia = (event) => {
     guia[event.target.name][event.target.id] = event.target.value;
     setGuia(guia);
+    console.log(guia);
   };
 
   const handleChange = (prop) => (event) => {
@@ -690,6 +692,7 @@ export default function FormSeccion() {
                 ))}
               </TextField>
               <TextField id="descripcion" name="datosEnvio" label="Descripcion corta del contenido" className={classes.margin} onChange={handleChangeGuia} />
+              <TextField id="tracks" name="datosEnvio" label="Trackings que se envian" className={classes.margin} onChange={handleChangeGuia} />
             </form>
           </Paper>
         </Grid>
