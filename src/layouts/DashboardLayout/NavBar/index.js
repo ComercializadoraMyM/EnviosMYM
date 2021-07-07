@@ -18,6 +18,8 @@ import {
   Users,
   Package,
   LogOut,
+  Archive,
+  FilePlus
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -46,6 +48,17 @@ const items = [
     icon: Package,
     title: 'Entradas'
   },
+  {
+    href: '/app/envios-view',
+    icon: Archive,
+    title: 'Envios nacional'
+  }, 
+  {
+    href: '/app/add-envios',
+    icon: FilePlus,
+    title: 'Agregar Envios'
+  },
+  
   {
     href: '/',
     onclick: logout,
