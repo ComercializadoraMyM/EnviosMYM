@@ -61,12 +61,6 @@ export default function BasicTable() {
         setEmployees(response.data)
     }
 
-      const [idUpdate, setId] = React.useState('');
-
-      const handleChangeId = (id) => {
-        setId (id);
-      }
-
       const handleDelete = async (idUp) => {
         await fetch("https://envios-api-service.herokuapp.com/api/envios/" + idUp, {
           method: 'DELETE',
@@ -120,7 +114,7 @@ export default function BasicTable() {
                     color='primary'
                     className='button'
                     onClick={() =>
-                    {handleChangeId(row._id);
+                    {
                     handleDelete(row._id);
                     handleClickCarga();
                     }}
