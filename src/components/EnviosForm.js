@@ -63,16 +63,23 @@ const useStyles = makeStyles((theme) => ({
     color: 'black',
     margin: '20px'
   },
+  paragr: {
+    color: '#444444',
+    textAlign: 'left',
+    marginTop: '20px',
+    marginLeft: '20px'
+  },
   snack: {
     width: '100%',
     '& > * + *': {
       marginTop: theme.spacing(2),
-    },
+    }
   },
 }));
 
 export default function FormSeccion() {
   useEffect(() => {
+    handleChangeListaClientes()
   }, [])
 
   const classes = useStyles();
@@ -90,6 +97,16 @@ export default function FormSeccion() {
         transportadora: '',
         tipo: '', 
         descripcion: ''
+      }, 
+      destinatario: {
+        nombre: '',
+        tipoDocumento: '',
+        documento: '',
+        pais: '',
+        ciudad: '',
+        direccion: '',
+        vlrUnidad: '',
+        vlrSeguro: ''
       }
     }
   );
@@ -113,6 +130,29 @@ export default function FormSeccion() {
     guia[event.target.name].tipo = event.target.value;
     setGuia(guia);
     setEmpaque(event.target.value);
+    console.log(guia);
+  };
+
+  const [clientes, setNombCliente] = React.useState([]);
+
+  const handleChangeListaClientes = async () => {
+    await fetch('https://envios-api-service.herokuapp.com/api/clientes')
+      .then(function (response) {
+        return response.json();
+      }).then(data => {
+        setNombCliente(data);
+      })
+      .catch(function (err) {
+        console.error(err);
+      });
+  }
+
+  const [cliente, setCliente] = React.useState('');
+
+  const handleChangeCliente = async (event) => {
+    guia[event.target.name] = event.target.value;
+    setGuia(guia);
+    setCliente(event.target.value);
     console.log(guia);
   };
 
@@ -180,7 +220,7 @@ export default function FormSeccion() {
         </Grid>
       </Grid>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Paper className={classes.paper}>
             <h2 className={classes.tit}>Datos del Envio</h2>
             <form>
@@ -223,6 +263,48 @@ export default function FormSeccion() {
                 Guia Enviada!
               </Alert>
             </Snackbar>
+          </Paper>
+        </Grid>
+        <Grid item xs={6}>
+          <Paper className={classes.paper}>
+          <h2 className={classes.tit}>Destinatario</h2>
+            <form noValidate>
+              <TextField
+                id="nombre"
+                name="destinatario"
+                className={clsx(classes.margin)}
+                select
+                label="Seleccione el Cliente"
+                value={cliente}
+                onChange={handleChangeCliente}
+              >
+                {clientes.map((option) => (
+                  <MenuItem key={option.nombre} value={option}>
+                    {option.nombre}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <p className={classes.paragr}>
+                <strong>Direccion: </strong>
+                {cliente.direccion}
+              </p>
+              <p className={classes.paragr}>
+                <strong>Pais: </strong>
+                {cliente.pais}
+              </p>
+              <p className={classes.paragr}>
+                <strong>Ciudad: </strong>
+                {cliente.ciudad}
+              </p>
+              <p className={classes.paragr}>
+                <strong>Email: </strong>
+                {cliente.email}
+              </p>
+              <p className={classes.paragr}>
+                <strong>Telefono: </strong>
+                {cliente.telefono}
+              </p>
+            </form>
           </Paper>
         </Grid>
       </Grid>

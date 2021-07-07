@@ -614,7 +614,7 @@ export default function FormSeccion() {
         </Grid>
         <Grid item xs={6}>
           <Paper className={classes.paper1}>
-            <h2 className={classes.tit}>Destinatario</h2>
+          <h2 className={classes.tit}>Destinatario</h2>
             <form noValidate>
               <TextField
                 id="nombre"
