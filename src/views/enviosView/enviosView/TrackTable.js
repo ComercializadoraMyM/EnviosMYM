@@ -89,6 +89,7 @@ export default function BasicTable() {
           <TableRow>
             <TableCell>Fecha</TableCell>
             <TableCell>Numero de Guia</TableCell>
+            <TableCell>Destinatario</TableCell>
             <TableCell>Valor</TableCell>
             <TableCell>Link de seguimiento</TableCell>
             <TableCell>Transportadora</TableCell>
@@ -104,8 +105,11 @@ export default function BasicTable() {
                 {moment(row.fecha).format('DD/MM/YYYY')}
               </TableCell>
               <TableCell>{row.datosEnvio.numGuia}</TableCell>
+              <TableCell>{row.destinatario.nombre}</TableCell>
               <TableCell>{row.datosEnvio.valor}</TableCell>
-              <TableCell>{row.datosEnvio.link}</TableCell>
+              <TableCell>
+                  {row.datosEnvio.link}
+              </TableCell>
               <TableCell>{row.datosEnvio.transportadora}</TableCell>
               <TableCell>{row.datosEnvio.tipo}</TableCell>
               <TableCell>{row.datosEnvio.descripcion}</TableCell>
