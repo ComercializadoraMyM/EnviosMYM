@@ -13,6 +13,7 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    Link
 } from '@material-ui/core';
 
 function Alert(props) {
@@ -108,7 +109,11 @@ export default function BasicTable() {
               <TableCell>{row.destinatario.nombre}</TableCell>
               <TableCell>{row.datosEnvio.valor}</TableCell>
               <TableCell>
-                  {row.datosEnvio.link}
+              <Link 
+              rel="noopener noreferrer" target="_blank"
+              href={row.datosEnvio.link} onClick={row.datosEnvio.link}>
+                    {row.datosEnvio.link}
+                  </Link>
               </TableCell>
               <TableCell>{row.datosEnvio.transportadora}</TableCell>
               <TableCell>{row.datosEnvio.tipo}</TableCell>
