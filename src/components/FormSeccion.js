@@ -155,7 +155,7 @@ const empaques = [
 const remitente = [
   {
     nombre: '  MYM Express',
-    direccion: '  9406 N.W 13th ST Suite 2',
+    direccion: '  7774 NW 64th St, MIAMI-FLORIDA 33166',
     origen: '  Estados Unidos, Miami, Florida',
     zipcode: '  33172',
     telefono: '  786 3020294',

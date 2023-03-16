@@ -157,7 +157,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           align="center"
           variant="body2"
         >
-          9406 NW 13th ST. BAY 42 MIAMI-FLORIDA 33172
+          7774 NW 64th St, MIAMI-FLORIDA 33166
         </Typography>
       </Box>
     </Box>
