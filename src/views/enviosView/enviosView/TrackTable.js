@@ -46,7 +46,7 @@ const useStyles = makeStyles({
   }
 });
 
-const URL = 'https://envios-api-service.onrenderapp.com/api/envios';
+const URL = 'https://envios-api-service.onrenderappapp.com/api/envios';
 
 export default function BasicTable() {
   const classes = useStyles();
@@ -63,7 +63,7 @@ export default function BasicTable() {
     }
 
       const handleDelete = async (idUp) => {
-        await fetch("https://envios-api-service.onrenderapp.com/api/envios/" + idUp, {
+        await fetch("https://envios-api-service.onrenderappapp.com/api/envios/" + idUp, {
           method: 'DELETE',
         }).then(
           getData()

@@ -61,7 +61,7 @@ const Toolbar = ({ className, ...rest }) => {
     setIdIn(idIn);
   };
 
-  const URL = 'https://envios-api-service.onrenderapp.com/api/trackings';
+  const URL = 'https://envios-api-service.onrenderappapp.com/api/trackings';
 
   const [guias, setGuias] = React.useState({
     "calculos": {},
@@ -97,7 +97,7 @@ const Toolbar = ({ className, ...rest }) => {
   }
   
   const handleChangeWHRBD = async() => {
-    await fetch("https://envios-api-service.onrenderapp.com/api/trackings/"+whrUpdate+'/'+idUpdate, {
+    await fetch("https://envios-api-service.onrenderappapp.com/api/trackings/"+whrUpdate+'/'+idUpdate, {
       method: 'POST', 
     }).then(data=>{
     }); 
