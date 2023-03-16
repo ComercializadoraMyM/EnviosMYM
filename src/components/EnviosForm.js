@@ -136,7 +136,7 @@ export default function FormSeccion() {
   const [clientes, setNombCliente] = React.useState([]);
 
   const handleChangeListaClientes = async () => {
-    await fetch('https://envios-api-service.onrenderappapp.com/api/clientes')
+    await fetch('https://envios-api-service.onrender.com/api/clientes')
       .then(function (response) {
         return response.json();
       }).then(data => {
@@ -158,7 +158,7 @@ export default function FormSeccion() {
 
   const handleChangeBD = async () => {
     var prueba = { "guia": JSON.stringify(guia) };
-    await fetch("https://envios-api-service.onrenderappapp.com/api/envios", {
+    await fetch("https://envios-api-service.onrender.com/api/envios", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

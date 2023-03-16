@@ -375,7 +375,7 @@ export default function FormSeccion() {
   const [clientes, setNombCliente] = React.useState([]);
 
   const handleChangeListaClientes = async () => {
-    await fetch('https://envios-api-service.onrenderappapp.com/api/clientes')
+    await fetch('https://envios-api-service.onrender.com/api/clientes')
       .then(function (response) {
         return response.json();
       }).then(data => {
@@ -396,7 +396,7 @@ export default function FormSeccion() {
 
   const [employees, setEmployees] = useState([]);
 
-  const URL = 'https://envios-api-service.onrenderappapp.com/api/guias';
+  const URL = 'https://envios-api-service.onrender.com/api/guias';
 
   const getData = async () => {
     const response = await axios.get(URL);
@@ -407,7 +407,7 @@ export default function FormSeccion() {
     guia.codBar = 'MYM-2021-'+(employees.length+1);
     handleCodID(guia.codBar);
     var prueba = { "guia": JSON.stringify(guia) };
-    await fetch("https://envios-api-service.onrenderappapp.com/api/guias", {
+    await fetch("https://envios-api-service.onrender.com/api/guias", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
