@@ -85,7 +85,7 @@ const Toolbar = ({ className, ...rest }) => {
     setIdIn(idIn);
   };
 
-  const URL = 'https://envios-api-service.herokuapp.com/api/guias';
+  const URL = 'https://envios-api-service.onrenderapp.com/api/guias';
 
   const [guias, setGuias] = React.useState({
     "calculos": {},
@@ -137,7 +137,7 @@ const Toolbar = ({ className, ...rest }) => {
   }
 
   const handleChangeStatusBD = async () => {
-    await fetch("https://envios-api-service.herokuapp.com/api/guias/" + statusUpdate + '/' + idUpdate, {
+    await fetch("https://envios-api-service.onrenderapp.com/api/guias/" + statusUpdate + '/' + idUpdate, {
       method: 'POST',
     }).then(data => {
       console.log();
@@ -145,7 +145,7 @@ const Toolbar = ({ className, ...rest }) => {
   }
 
   const handleChangewhrBD = async () => {
-    await fetch("https://envios-api-service.herokuapp.com/api/guias/whr/" + whrUpdate + '/' + idUpdate, {
+    await fetch("https://envios-api-service.onrenderapp.com/api/guias/whr/" + whrUpdate + '/' + idUpdate, {
       method: 'POST',
     }).then(data => {
     });

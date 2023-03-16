@@ -177,21 +177,21 @@ function Row(props) {
   };
 
   const handleChangeStatusBD = async () => {
-    await fetch("https://envios-api-service.herokuapp.com/api/guias/" + statusUpdate + '/' + idUpdate, {
+    await fetch("https://envios-api-service.onrenderapp.com/api/guias/" + statusUpdate + '/' + idUpdate, {
       method: 'POST',
     }).then(data => {
     });
   }
 
   const handleChangewhrBD = async () => {
-    await fetch("https://envios-api-service.herokuapp.com/api/guias/whr/" + whrUpdate + '/' + idUpdate, {
+    await fetch("https://envios-api-service.onrenderapp.com/api/guias/whr/" + whrUpdate + '/' + idUpdate, {
       method: 'POST',
     }).then(data => {
     });
   }
 
   const handleDelete = async (idUp) => {
-    await fetch("https://envios-api-service.herokuapp.com/api/guias/" + idUp, {
+    await fetch("https://envios-api-service.onrenderapp.com/api/guias/" + idUp, {
       method: 'DELETE',
     }).then(data => {
     });
@@ -385,7 +385,7 @@ function Row(props) {
 
 export default function CollapsibleGuides(props) {
   const [employees, setEmployees] = useState([]);
-  const URL = 'https://envios-api-service.herokuapp.com/api/guias';
+  const URL = 'https://envios-api-service.onrenderapp.com/api/guias';
 
   useEffect(() => {
     getData()

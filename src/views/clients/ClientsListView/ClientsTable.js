@@ -70,7 +70,7 @@ const useStyles = makeStyles({
     },
 });
 
-const URL = 'https://envios-api-service.herokuapp.com/api/clientes';
+const URL = 'https://envios-api-service.onrenderapp.com/api/clientes';
 
 export default function BasicTable() {
   const classes = useStyles();
@@ -101,7 +101,7 @@ export default function BasicTable() {
 
     const handleChangeBD = async() => {
         var prueba = { "cliente": JSON.stringify(cliente) };
-        await fetch("https://envios-api-service.herokuapp.com/api/clientes", {
+        await fetch("https://envios-api-service.onrenderapp.com/api/clientes", {
         method: 'POST', 
         headers: {
             'Content-Type': 'application/json'
@@ -192,21 +192,21 @@ export default function BasicTable() {
     }
 
     const handleChangeTarBD = async() => {
-        await fetch("https://envios-api-service.herokuapp.com/api/clientes/tarifa/"+tarNueva+'/'+idUpdate, {
+        await fetch("https://envios-api-service.onrenderapp.com/api/clientes/tarifa/"+tarNueva+'/'+idUpdate, {
           method: 'POST', 
         }).then(data=>{
         }); 
       }
 
     const handleChangeSegBD = async() => {
-        await fetch("https://envios-api-service.herokuapp.com/api/clientes/seguro/"+segNueva+'/'+idUpdate, {
+        await fetch("https://envios-api-service.onrenderapp.com/api/clientes/seguro/"+segNueva+'/'+idUpdate, {
           method: 'POST', 
         }).then(data=>{
         }); 
       }
 
     const handleChangeDirBD = async() => {
-        await fetch("https://envios-api-service.herokuapp.com/api/clientes/direccion/"+dirNueva+'/'+idUpdate, {
+        await fetch("https://envios-api-service.onrenderapp.com/api/clientes/direccion/"+dirNueva+'/'+idUpdate, {
           method: 'POST', 
         }).then(data=>{
         }); 

@@ -45,9 +45,9 @@ const useStyles = makeStyles({
     }
 });
 
-const URL = 'https://envios-api-service.herokuapp.com/api/guias/usuario/'+localStorage.getItem("user");
-const URLT = 'https://envios-api-service.herokuapp.com/api/trackings/usuario/'+localStorage.getItem("user");
-const URLE = 'https://envios-api-service.herokuapp.com/api/envios/usuario/'+localStorage.getItem("user");
+const URL = 'https://envios-api-service.onrenderapp.com/api/guias/usuario/'+localStorage.getItem("user");
+const URLT = 'https://envios-api-service.onrenderapp.com/api/trackings/usuario/'+localStorage.getItem("user");
+const URLE = 'https://envios-api-service.onrenderapp.com/api/envios/usuario/'+localStorage.getItem("user");
 
 export default function UserView() {
   const classes = useStyles();

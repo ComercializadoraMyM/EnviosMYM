@@ -15,7 +15,7 @@ export const login = async (email, password) => {
     await axios({
         method: 'get',
         contentType: "application/json",
-        url: 'https://envios-api-service.herokuapp.com/api/usuarios/'+email+'/'+hashHex.toString(),
+        url: 'https://envios-api-service.onrenderapp.com/api/usuarios/'+email+'/'+hashHex.toString(),
     }).then((response) => {
         loginUser = response.data;
         console.log(loginUser[0]);
