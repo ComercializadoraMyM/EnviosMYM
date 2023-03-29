@@ -21,6 +21,7 @@ import {
   DialogTitle,
   Snackbar,
 } from '@material-ui/core';
+import { sortBy } from 'lodash';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -379,6 +380,7 @@ export default function FormSeccion() {
       .then(function (response) {
         return response.json();
       }).then(data => {
+        sortBy(data.nombre)
         setNombCliente(data);
       })
       .catch(function (err) {
@@ -626,7 +628,7 @@ export default function FormSeccion() {
                 onChange={handleChangeCliente}
               >
                 {clientes.map((option) => (
-                  <MenuItem key={option.nombre.sort()} value={option}>
+                  <MenuItem key={option.nombre} value={option}>
                     {option.nombre}
                   </MenuItem>
                 ))}
