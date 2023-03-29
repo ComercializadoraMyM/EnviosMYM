@@ -625,7 +625,7 @@ export default function FormSeccion() {
                 value={cliente}
                 onChange={handleChangeCliente}
               >
-                {clientes.sort.map((option) => (
+                {clientes.sort().map((option) => (
                   <MenuItem key={option.nombre} value={option}>
                     {option.nombre}
                   </MenuItem>
