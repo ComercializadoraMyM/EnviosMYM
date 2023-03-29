@@ -377,7 +377,6 @@ export default function FormSeccion() {
   const handleChangeListaClientes = async () => {
     await fetch('https://envios-api-service.onrender.com/api/clientes')
       .then(function (response) {
-        response = ordenarAsc(response, 'nombre')
         return response.json();
       }).then(data => {
         setNombCliente(data);
@@ -386,12 +385,6 @@ export default function FormSeccion() {
         console.error(err);
       });
   }
-
-  function ordenarAsc(p_array_json, p_key) {
-    p_array_json.sort(function (a, b) {
-       return a[p_key] > b[p_key];
-    });
- }
 
   const [cliente, setCliente] = React.useState('');
 
@@ -633,7 +626,7 @@ export default function FormSeccion() {
                 onChange={handleChangeCliente}
               >
                 {clientes.map((option) => (
-                  <MenuItem key={option.nombre} value={option}>
+                  <MenuItem key={option.nombre.sort()} value={option}>
                     {option.nombre}
                   </MenuItem>
                 ))}
