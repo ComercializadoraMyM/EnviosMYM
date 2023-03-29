@@ -157,7 +157,7 @@ const remitente = [
     nombre: '  MYM Express',
     direccion: '  7774 NW 64th St, MIAMI-FLORIDA 33166',
     origen: '  Estados Unidos, Miami, Florida',
-    zipcode: '  33172',
+    zipcode: '  33166',
     telefono: '  786 3020294',
     email: '  mymexpressglobal@gmail.com'
   }
@@ -625,7 +625,7 @@ export default function FormSeccion() {
                 value={cliente}
                 onChange={handleChangeCliente}
               >
-                {clientes.map((option) => (
+                {clientes.sort.map((option) => (
                   <MenuItem key={option.nombre} value={option}>
                     {option.nombre}
                   </MenuItem>
